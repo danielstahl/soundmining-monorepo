@@ -1,11 +1,11 @@
 
-from dataclasses import dataclass, field
-from pythonosc import osc_bundle
-from queue import PriorityQueue
-import time
-import logging
 import concurrent.futures
-from pythonosc import udp_client
+import logging
+import time
+from dataclasses import dataclass, field
+from queue import PriorityQueue
+
+from pythonosc import osc_bundle, udp_client
 
 BUFFER_TIME = 3.0
 

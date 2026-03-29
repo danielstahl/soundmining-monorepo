@@ -1,13 +1,15 @@
 
-import logging
 import concurrent.futures
-from pythonosc.dispatcher import Dispatcher
-from pythonosc.osc_server import BlockingOSCUDPServer
-from soundmining_library.supercollider_client import SupercolliderClient
-from soundmining_library import note
+import logging
 import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+
+from pythonosc.dispatcher import Dispatcher
+from pythonosc.osc_server import BlockingOSCUDPServer
+
+from soundmining_library import note
+from soundmining_library.supercollider_client import SupercolliderClient
 
 
 class NoteHandler:

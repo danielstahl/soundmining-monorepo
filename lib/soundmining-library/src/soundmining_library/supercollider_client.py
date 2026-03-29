@@ -1,12 +1,9 @@
-from pythonosc import udp_client
-from pythonosc import osc_message
-from pythonosc import osc_message_builder
-from pythonosc import osc_bundle
-from pythonosc import osc_bundle_builder
-from soundmining_library import buffered_playback
-import time
 import logging
+import time
 
+from pythonosc import osc_bundle, osc_bundle_builder, osc_message, osc_message_builder, udp_client
+
+from soundmining_library import buffered_playback
 
 PLAYBACK_DELAY = 2.0
 

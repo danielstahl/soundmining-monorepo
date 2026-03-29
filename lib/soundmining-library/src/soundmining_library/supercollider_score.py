@@ -1,8 +1,9 @@
 
-from pythonosc import osc_bundle
-from pythonosc import osc_message
-from soundmining_library import supercollider_client
 import io
+
+from pythonosc import osc_bundle, osc_message
+
+from soundmining_library import supercollider_client
 
 
 class SupercolliderScore:

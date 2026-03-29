@@ -1,5 +1,5 @@
 import random
-from typing import TypeVar, Generic
+from typing import Generic, TypeVar
 
 
 def random_range(min: float, max: float) -> float:
@@ -10,7 +10,7 @@ def random_int_range(min: int, max: int) -> int:
     return random.randint(min, max)
 
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 def pick_items(items: list[T], size: int) -> list[T]:
@@ -18,23 +18,20 @@ def pick_items(items: list[T], size: int) -> list[T]:
 
 
 class WeightedRandom(Generic[T]):
-
-    def make_sorted_pairs(self,
-                          pairs: list[tuple[T, float]]) -> list[tuple[T, float]]:
+    def make_sorted_pairs(self, pairs: list[tuple[T, float]]) -> list[tuple[T, float]]:
         probability_sum = 0
-        for (value, probability) in pairs:
+        for value, probability in pairs:
             probability_sum = probability_sum + probability
         fact = 1.0 / probability_sum
         result = []
-        for (value, probability) in pairs:
+        for value, probability in pairs:
             result.append((value, probability * fact))
         return result
 
     def __init__(self, pairs: list[tuple[T, float]]) -> None:
         self.sorted_pairs = self.make_sorted_pairs(pairs)
 
-    def choose_value(self, weighted_random: float,
-                     pairs_to_choose: list[tuple[T, float]]) -> T:
+    def choose_value(self, weighted_random: float, pairs_to_choose: list[tuple[T, float]]) -> T:
         head, *tail = pairs_to_choose
         (head_item, head_probbility) = head
         if weighted_random <= head_probbility:
@@ -47,7 +44,6 @@ class WeightedRandom(Generic[T]):
 
 
 class MarkovChain(Generic[T]):
-
     def __init__(self, transition_matrix: dict[T, dict[T, float]], initial_value: T) -> None:
         self.transition_matrix = self.scale_transition_matrix(transition_matrix)
         self.current_value = initial_value
@@ -89,6 +85,7 @@ def pan_line(distance: float, ranges: list[tuple[float, float]] = [(-0.99, 0.99)
 def pan_point(ranges: list[tuple[float, float]] = [(-0.99, 0.99)]) -> float:
     range_start, range_end = random.choices(ranges, k=1)[0]
     return random_range(range_start, range_end)
+
 
 # Make dynamic generative that change probability over time.
 # Initiall support static and line. Also be able to chain into

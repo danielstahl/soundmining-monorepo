@@ -1,6 +1,6 @@
 
-from typing import Self, Callable
 from dataclasses import dataclass
+from typing import Callable, Self
 
 
 @dataclass
