@@ -1,0 +1,38 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# --- Environments (uv / virtualenv) ---
+.venv/
+env/
+venv/
+ENV/
+uv.lock
+
+# --- macOS System Files ---
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# --- IDEs ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Project Specifics ---
+# Ignore local local configuration if you use .env files
+.env
+config.local.yaml
+
+# --- Audio/Video (Optional) ---
+# If you keep large renders in the repo, ignore them
+# *.wav
+# *.mp4
+# *.rpp-bak

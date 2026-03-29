@@ -1,0 +1,10 @@
+roots:
+  artwork: "/Users/danielstahl/Documents/Soundmining/ArtWork"
+  sounds: "/Users/danielstahl/Documents/Soundmining/Sounds"
+  mixes: "/Users/danielstahl/Documents/Soundmining/Mixes"
+  stage: "/Users/danielstahl/Documents/Soundmining/Stage"
+  video: "/Users/danielstahl/Documents/Soundmining/Video"
+applications:
+  sclang: "/Applications/SuperCollider/SuperCollider.app/Contents/MacOS/sclang"
+  scsynh: "/Applications/SuperCollider/SuperCollider.app/Contents/Resources/scsynth"
+  reaper: "/Applications/REAPER.app/Contents/MacOS/REAPER"

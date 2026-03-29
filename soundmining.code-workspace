@@ -1,0 +1,50 @@
+{
+  "folders": [
+    {
+      "name": "ROOT",
+      "path": "."
+    },
+    {
+      "name": "LIBRARIES",
+      "path": "lib"
+    },
+    {
+      "name": "PROJECTS",
+      "path": "projects"
+    }
+  ],
+  "settings": {
+    // 1. Tell VS Code to use the uv-managed virtual environment
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+    "python.terminal.activateEnvInCurrentTerminal": true,
+
+    // 2. Use Ruff for everything (Formatting & Linting)
+    "python.analysis.typeCheckingMode": "basic",
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.ruff": "explicit",
+      "source.organizeImports.ruff": "explicit"
+    },
+
+    // 3. TOML configuration for your pyproject files
+    "evenBetterToml.formatter.columnWidth": 88,
+    
+    // 4. Clean up the sidebar (Hide junk)
+    "files.exclude": {
+      "**/.git": true,
+      "**/.DS_Store": true,
+      "**/__pycache__": true,
+      "**/.pytest_cache": true,
+      "**/*.pyc": true
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-python.python",
+      "charliermarsh.ruff",
+      "tamasfe.even-better-toml",
+      "mechatroner.rainbow-csv"
+    ]
+  }
+}

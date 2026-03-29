@@ -1,0 +1,42 @@
+[project]
+name = "soundmining-monorepo"
+version = "2026.03.0"
+authors = [
+    { name = "Daniel Ståhl" }
+]
+description = "Unified monorepo for SuperCollider, Python, and Reaper orchestration."
+requires-python = ">=3.12"
+dependencies = [
+    "ipykernel",    # Essential for VS Code Notebooks
+    "ruff",          # Fast linter/formatter
+    "pyyaml",        # For parsing your project manifests
+    "pathlib",       # Modern path handling
+    "ipywidgets",
+    "ipycanvas",
+    "matplotlib",
+    "soundmining-library"
+]
+
+[tool.uv]
+# This ensures that when you run 'uv sync', all your local libs
+# are automatically installed in editable mode.
+[dependency-groups]
+dev = [
+    "pytest"
+]
+
+[tool.uv.workspace]
+members = ["lib/*", "projects/*"]
+
+[tool.uv.sources]
+# The "Where": This tells uv to look inside the workspace for this package
+soundmining-library = { workspace = true }
+
+[tool.ruff]
+line-length = 150
+target-version = "py312"
+# Automatically fix simple linting errors on save
+fix = true 
+
+[tool.ruff.lint]
+select = ["E", "F", "I"] # Error, Flake8, Isort (clean imports)
