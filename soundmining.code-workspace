@@ -1,15 +1,15 @@
 {
   "folders": [
     {
-      "name": "ROOT",
+      "name": "root",
       "path": "."
     },
     {
-      "name": "LIBRARIES",
+      "name": "libraries",
       "path": "lib"
     },
     {
-      "name": "PROJECTS",
+      "name": "projects",
       "path": "projects"
     }
   ],

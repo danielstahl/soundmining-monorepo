@@ -1,10 +1,8 @@
 [project]
 name = "soundmining-monorepo"
 version = "2026.03.0"
-authors = [
-    { name = "Daniel Ståhl" }
-]
-description = "Unified monorepo for SuperCollider, Python, and Reaper orchestration."
+description = "Monorepo for music composition and DSP"
+readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "ipykernel",    # Essential for VS Code Notebooks
@@ -17,7 +15,21 @@ dependencies = [
     "soundmining-library"
 ]
 
+[project.scripts]
+sc-start = "tools.sc.launcher:launch_supercollider"
+sc-compile = "tools.sc.compiler:main"
+
 [tool.uv]
+package = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["tools", "lib"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
 # This ensures that when you run 'uv sync', all your local libs
 # are automatically installed in editable mode.
 [dependency-groups]
@@ -26,7 +38,7 @@ dev = [
 ]
 
 [tool.uv.workspace]
-members = ["lib/*", "projects/*"]
+members = ["lib/soundmining-library", "projects/*"]
 
 [tool.uv.sources]
 # The "Where": This tells uv to look inside the workspace for this package
@@ -40,3 +52,4 @@ fix = true
 
 [tool.ruff.lint]
 select = ["E", "F", "I"] # Error, Flake8, Isort (clean imports)
+

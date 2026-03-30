@@ -36,3 +36,6 @@ config.local.yaml
 # *.wav
 # *.mp4
 # *.rpp-bak
+
+# SuperCollider Build Artifacts
+tools/sc/synthdefs/*.scsyndef
