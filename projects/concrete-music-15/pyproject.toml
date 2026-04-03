@@ -1,0 +1,8 @@
+[project]
+name = "concrete-music-15"
+version = "0.1.0"
+description = "Notebooks and sketches for Piece 15"
+dependencies = [] # Add project-specific libs here if needed
+
+[tool.uv]
+managed = true

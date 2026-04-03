@@ -8,3 +8,4 @@ applications:
   sclang: "/Applications/SuperCollider/SuperCollider.app/Contents/MacOS/sclang"
   scsynh: "/Applications/SuperCollider/SuperCollider.app/Contents/Resources/scsynth"
   reaper: "/Applications/REAPER.app/Contents/MacOS/REAPER"
+synthdefs: "tools/sc/synthdefs"

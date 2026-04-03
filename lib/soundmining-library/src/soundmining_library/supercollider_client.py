@@ -1,5 +1,6 @@
 import logging
 import time
+from pathlib import Path
 
 from pythonosc import osc_bundle, osc_bundle_builder, osc_message, osc_message_builder, udp_client
 
@@ -52,10 +53,7 @@ def make_message(address: str, args: list[osc_message_builder.ArgValue]) -> osc_
     return builder.build()
 
 
-def new_synth(instrument_name: str,
-              add_action: int,
-              node_id: int,
-              args: list[osc_message_builder.ArgValue]) -> osc_message.OscMessage:
+def new_synth(instrument_name: str, add_action: int, node_id: int, args: list[osc_message_builder.ArgValue]) -> osc_message.OscMessage:
     message_args = [instrument_name, -1, add_action, node_id] + args
     return make_message("/s_new", message_args)
 
@@ -111,8 +109,8 @@ def alloc_read(buffer_number: int, path_name: str) -> osc_message.OscMessage:
     return make_message("/b_allocRead", [buffer_number, path_name])
 
 
-def load_dir(path_name: str) -> osc_message.OscMessage:
-    return make_message("/d_loadDir", [path_name])
+def load_dir(path_name: Path) -> osc_message.OscMessage:
+    return make_message("/d_loadDir", [str(path_name)])
 
 
 def dump_osc(enable: bool) -> osc_message.OscMessage:

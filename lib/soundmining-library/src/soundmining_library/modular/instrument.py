@@ -1,10 +1,10 @@
-
 import uuid
-from enum import Enum
-from typing import Self
-from soundmining_library import bus_allocator
 from abc import ABC, abstractmethod
-from soundmining_library import supercollider_client
+from enum import Enum
+from pathlib import Path
+from typing import Self
+
+from soundmining_library import bus_allocator, supercollider_client
 
 
 class AddAction(Enum):
@@ -26,10 +26,7 @@ def setup_nodes(client: supercollider_client.SupercolliderClient) -> None:
     client.send_message(supercollider_client.group_tail(NodeId.EFFECT.value, NodeId.ROOM_EFFECT.value))
 
 
-DEFAULT_SYNTH_DIR = "/Users/danielstahl/Documents/Projects/soundmining-modular/src/main/sc/synths"
-
-
-def load_synth_dir(client: supercollider_client.SupercolliderClient, synth_dir: str = DEFAULT_SYNTH_DIR) -> None:
+def load_synth_dir(client: supercollider_client.SupercolliderClient, synth_dir: Path) -> None:
     client.send_message(supercollider_client.load_dir(synth_dir))
 
 
@@ -53,8 +50,7 @@ class Bus:
 
 
 class Instrument(ABC):
-    def __init__(self, instrument_name: str, nr_of_channels: int,
-                 output_bus_allocator: bus_allocator.BusAllocator) -> None:
+    def __init__(self, instrument_name: str, nr_of_channels: int, output_bus_allocator: bus_allocator.BusAllocator) -> None:
         self.id = str(uuid.uuid1())
         self.instrument_name = instrument_name
         self.nr_of_channels = nr_of_channels
@@ -76,26 +72,26 @@ class Instrument(ABC):
         self._optional_dur = value
         return self
 
-    def me_in_instrument_list(self, instrument_list: list['Instrument']) -> bool:
+    def me_in_instrument_list(self, instrument_list: list["Instrument"]) -> bool:
         for instrument in instrument_list:
             if instrument.id == self.id:
                 return True
         return False
 
-    def prepend_to_graph(self, parent: list['Instrument']) -> list['Instrument']:
+    def prepend_to_graph(self, parent: list["Instrument"]) -> list["Instrument"]:
         if not self.me_in_instrument_list(parent):
             return [self] + parent
         else:
             return parent
 
-    def append_to_graph(self, parent: list['Instrument']) -> list['Instrument']:
+    def append_to_graph(self, parent: list["Instrument"]) -> list["Instrument"]:
         if not self.me_in_instrument_list(parent):
             return parent + [self]
         else:
             return parent
 
     @abstractmethod
-    def graph(self, parent: list['Instrument']) -> list['Instrument']:
+    def graph(self, parent: list["Instrument"]) -> list["Instrument"]:
         pass
 
     @abstractmethod
@@ -123,9 +119,14 @@ class Instrument(ABC):
             final_duration = self.get_final_duration(duration)
 
             graph = [
-                self.instrument_name, -1, self._add_action.value, self._node_id.value,
-                "out", self.dynamic_output_bus(start_time, duration),
-                "dur", final_duration
+                self.instrument_name,
+                -1,
+                self._add_action.value,
+                self._node_id.value,
+                "out",
+                self.dynamic_output_bus(start_time, duration),
+                "dur",
+                final_duration,
             ] + self.internal_build(start_time, duration)
             self.instrument_is_built = True
             return graph
@@ -148,6 +149,5 @@ class ControlInstrument(Instrument):
 
 
 class AudioInstrument(Instrument):
-    def __init__(self, instrument_name: str, nr_of_channels: int,
-                 output_bus_allocator: bus_allocator.BusAllocator) -> None:
+    def __init__(self, instrument_name: str, nr_of_channels: int, output_bus_allocator: bus_allocator.BusAllocator) -> None:
         super().__init__(instrument_name, nr_of_channels, output_bus_allocator)

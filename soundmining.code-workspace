@@ -16,6 +16,12 @@
   "settings": {
     // 1. Tell VS Code to use the uv-managed virtual environment
     "python.defaultInterpreterPath": ".venv/bin/python",
+    "jupyter.askForKernelRestart": false,    
+    "python.testing.pytestEnabled": true,
+		"python.testing.unittestEnabled": false,
+		"python.testing.pytestArgs": [
+			"lib/soundmining-library"
+		],
     "python.terminal.activateEnvInCurrentTerminal": true,
 
     // 2. Use Ruff for everything (Formatting & Linting)
