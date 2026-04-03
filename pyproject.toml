@@ -53,3 +53,6 @@ fix = true
 [tool.ruff.lint]
 select = ["E", "F", "I"] # Error, Flake8, Isort (clean imports)
 
+[tool.ruff.format]
+preview = true
+
