@@ -1,16 +1,17 @@
+from typing import Optional, Self
+
+from pythonosc.osc_message import OscMessage
+
 from soundmining_library import supercollider_client
-from soundmining_library.supercollider_client import SupercolliderClient
 from soundmining_library.modular.instrument import (
-    AudioInstrument,
     AddAction,
+    AudioInstrument,
     NodeId,
 )
-from pythonosc.osc_message import OscMessage
-from typing import Self
+from soundmining_library.modular.sound_play import BufNumAllocator, SoundPlay
 from soundmining_library.modular_v2.instruments_v2 import InstrumentsV2
+from soundmining_library.supercollider_client import SupercolliderClient
 from soundmining_library.supercollider_score import SupercolliderScore
-from soundmining_library.modular.sound_play import BufNumAllocator
-from soundmining_library.modular.sound_play import SoundPlay
 
 
 class SynthPlayerV2:
@@ -83,6 +84,7 @@ class SynthNoteV2:
         return self.push(self.input)
 
     def input_from_note(self, synth_note: "SynthNoteV2") -> Self:
+        assert synth_note.input is not None
         self.input = synth_note.input
         return self.push(self.input)
 
@@ -95,36 +97,30 @@ class SynthNoteV2:
         sound: str,
         rate: float,
         amp: AudioInstrument,
-        start_override: float = None,
-        end_override: float = None,
+        start_override: Optional[float] = None,
+        end_override: Optional[float] = None,
     ) -> Self:
         synth_player = self.synth_player
         sound_play = synth_player.get_sound(sound)
         start = start_override or sound_play.start
         end = end_override or sound_play.end
+        assert sound_play.buf_num is not None
+        buf_num: int = sound_play.buf_num
         mono_play_buffer = (
-            synth_player.instruments.mono_play_buffer(sound_play.buf_num, rate, start, end, amp)
-            .add_action(AddAction.TAIL_ACTION)
-            .node_id(self.node_id)
+            synth_player.instruments.mono_play_buffer(buf_num, rate, start, end, amp).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
         )
         duration = sound_play.duration(rate)
         self.audio_stack.push(mono_play_buffer, duration)
         return self
 
     def bank_of_osc(self, freqs: list[float], amps: list[float], phases: list[float]) -> Self:
-        bank = (
-            self.synth_player.instruments.bank_of_osc(freqs, amps, phases)
-            .add_action(AddAction.TAIL_ACTION)
-            .node_id(self.node_id)
-        )
+        bank = self.synth_player.instruments.bank_of_osc(freqs, amps, phases).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
         return self.push(bank)
 
     def bank_of_resonators(self, freqs: list[float], amps: list[float], ring_times: list[float]) -> Self:
         in_bus = self.audio_stack.pop()
         bank = (
-            self.synth_player.instruments.bank_of_resonators(in_bus, freqs, amps, ring_times)
-            .add_action(AddAction.TAIL_ACTION)
-            .node_id(self.node_id)
+            self.synth_player.instruments.bank_of_resonators(in_bus, freqs, amps, ring_times).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
         )
         return self.push(bank)
 
@@ -138,8 +134,10 @@ class SynthNoteV2:
     ) -> Self:
         synth_player = self.synth_player
         sound_play = synth_player.get_sound(sound)
+        assert sound_play.buf_num is not None
         grain = (
-            synth_player.instruments.mono_grain_buf(
+            synth_player.instruments
+            .mono_grain_buf(
                 sound_play.buf_num,
                 grain_trigger_bus,
                 grain_duration_bus,
@@ -156,11 +154,7 @@ class SynthNoteV2:
         return self.push(osc)
 
     def triangle(self, freq: AudioInstrument, amp: AudioInstrument) -> Self:
-        osc = (
-            self.synth_player.instruments.triangle_osc(amp, freq)
-            .add_action(AddAction.TAIL_ACTION)
-            .node_id(self.node_id)
-        )
+        osc = self.synth_player.instruments.triangle_osc(amp, freq).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
         return self.push(osc)
 
     def saw(self, freq: AudioInstrument, amp: AudioInstrument) -> Self:
@@ -168,11 +162,7 @@ class SynthNoteV2:
         return self.push(osc)
 
     def pulse(self, freq: AudioInstrument, width: AudioInstrument, amp: AudioInstrument) -> Self:
-        osc = (
-            self.synth_player.instruments.pulse_osc(amp, freq, width)
-            .add_action(AddAction.TAIL_ACTION)
-            .node_id(self.node_id)
-        )
+        osc = self.synth_player.instruments.pulse_osc(amp, freq, width).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
         return self.push(osc)
 
     def dust(self, freq: AudioInstrument, amp: AudioInstrument) -> Self:
@@ -180,123 +170,77 @@ class SynthNoteV2:
         return self.push(dust)
 
     def white_noise(self, amp: AudioInstrument) -> Self:
-        noise = (
-            self.synth_player.instruments.white_noise_osc(amp).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
-        )
+        noise = self.synth_player.instruments.white_noise_osc(amp).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
         return self.push(noise)
 
     def pink_noise(self, amp: AudioInstrument) -> Self:
-        noise = (
-            self.synth_player.instruments.pink_noise_osc(amp).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
-        )
+        noise = self.synth_player.instruments.pink_noise_osc(amp).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
         return self.push(noise)
 
     def mono_high_pass_filter(self, freq_bus: AudioInstrument) -> Self:
         in_bus = self.audio_stack.pop()
-        filter = (
-            self.synth_player.instruments.mono_high_pass_filter(in_bus, freq_bus)
-            .add_action(AddAction.TAIL_ACTION)
-            .node_id(self.node_id)
-        )
+        filter = self.synth_player.instruments.mono_high_pass_filter(in_bus, freq_bus).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
         return self.push(filter)
 
     def stereo_high_pass_filter(self, freq_bus: AudioInstrument) -> Self:
         in_bus = self.audio_stack.pop()
-        filter = (
-            self.synth_player.instruments.stereo_high_pass_filter(in_bus, freq_bus)
-            .add_action(AddAction.TAIL_ACTION)
-            .node_id(self.node_id)
-        )
+        filter = self.synth_player.instruments.stereo_high_pass_filter(in_bus, freq_bus).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
         return self.push(filter)
 
     def mono_low_pass_filter(self, freq_bus: AudioInstrument) -> Self:
         in_bus = self.audio_stack.pop()
-        filter = (
-            self.synth_player.instruments.mono_low_pass_filter(in_bus, freq_bus)
-            .add_action(AddAction.TAIL_ACTION)
-            .node_id(self.node_id)
-        )
+        filter = self.synth_player.instruments.mono_low_pass_filter(in_bus, freq_bus).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
         return self.push(filter)
 
     def stereo_low_pass_filter(self, freq_bus: AudioInstrument) -> Self:
         in_bus = self.audio_stack.pop()
-        filter = (
-            self.synth_player.instruments.stereo_low_pass_filter(in_bus, freq_bus)
-            .add_action(AddAction.TAIL_ACTION)
-            .node_id(self.node_id)
-        )
+        filter = self.synth_player.instruments.stereo_low_pass_filter(in_bus, freq_bus).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
         return self.push(filter)
 
     def mono_band_pass_filter(self, freq_bus: AudioInstrument, rq_bus: AudioInstrument) -> Self:
         in_bus = self.audio_stack.pop()
-        filter = (
-            self.synth_player.instruments.mono_band_pass_filter(in_bus, freq_bus, rq_bus)
-            .add_action(AddAction.TAIL_ACTION)
-            .node_id(self.node_id)
-        )
+        filter = self.synth_player.instruments.mono_band_pass_filter(in_bus, freq_bus, rq_bus).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
         return self.push(filter)
 
     def steroe_band_pass_filter(self, freq_bus: AudioInstrument, rq_bus: AudioInstrument) -> Self:
         in_bus = self.audio_stack.pop()
         filter = (
-            self.synth_player.instruments.stereo_band_pass_filter(in_bus, freq_bus, rq_bus)
-            .add_action(AddAction.TAIL_ACTION)
-            .node_id(self.node_id)
+            self.synth_player.instruments.stereo_band_pass_filter(in_bus, freq_bus, rq_bus).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
         )
         return self.push(filter)
 
     def mono_band_reject_filter(self, freq_bus: AudioInstrument, rq_bus: AudioInstrument) -> Self:
         in_bus = self.audio_stack.pop()
         filter = (
-            self.synth_player.instruments.mono_band_reject_filter(in_bus, freq_bus, rq_bus)
-            .add_action(AddAction.TAIL_ACTION)
-            .node_id(self.node_id)
+            self.synth_player.instruments.mono_band_reject_filter(in_bus, freq_bus, rq_bus).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
         )
         return self.push(filter)
 
     def stereo_band_reject_filter(self, freq_bus: AudioInstrument, rq_bus: AudioInstrument) -> Self:
         in_bus = self.audio_stack.pop()
         filter = (
-            self.synth_player.instruments.stereo_band_reject_filter(in_bus, freq_bus, rq_bus)
-            .add_action(AddAction.TAIL_ACTION)
-            .node_id(self.node_id)
+            self.synth_player.instruments.stereo_band_reject_filter(in_bus, freq_bus, rq_bus).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
         )
         return self.push(filter)
 
     def resonent_filter(self, freq_bus: AudioInstrument, decay_bus: AudioInstrument) -> Self:
         in_bus = self.audio_stack.pop()
-        filter = (
-            self.synth_player.instruments.resonant_filter(in_bus, freq_bus, decay_bus)
-            .add_action(AddAction.TAIL_ACTION)
-            .node_id(self.node_id)
-        )
+        filter = self.synth_player.instruments.resonant_filter(in_bus, freq_bus, decay_bus).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
         return self.push(filter)
 
     def pan(self, pan_position: AudioInstrument) -> Self:
         in_audio = self.audio_stack.pop()
-        panning = (
-            self.synth_player.instruments.panning(in_audio, pan_position)
-            .add_action(AddAction.TAIL_ACTION)
-            .node_id(self.node_id)
-        )
+        panning = self.synth_player.instruments.panning(in_audio, pan_position).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
         return self.push(panning)
 
     def mono_volume(self, amp: AudioInstrument) -> Self:
         in_bus = self.audio_stack.pop()
-        volume = (
-            self.synth_player.instruments.mono_volume(in_bus, amp)
-            .add_action(AddAction.TAIL_ACTION)
-            .node_id(self.node_id)
-        )
+        volume = self.synth_player.instruments.mono_volume(in_bus, amp).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
         return self.push(volume)
 
     def stereo_volume(self, amp: AudioInstrument) -> Self:
         in_bus = self.audio_stack.pop()
-        volume = (
-            self.synth_player.instruments.stereo_volume(in_bus, amp)
-            .add_action(AddAction.TAIL_ACTION)
-            .node_id(self.node_id)
-        )
+        volume = self.synth_player.instruments.stereo_volume(in_bus, amp).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
         return self.push(volume)
 
     def stereo_hall_reverb(
@@ -315,7 +259,8 @@ class SynthNoteV2:
     ) -> Self:
         in_bus = self.audio_stack.pop()
         reverb = (
-            self.synth_player.instruments.stereo_hall_reverb(
+            self.synth_player.instruments
+            .stereo_hall_reverb(
                 in_bus,
                 amp_bus,
                 rt60,
@@ -343,9 +288,7 @@ class SynthNoteV2:
     ) -> Self:
         in_bus = self.audio_stack.pop()
         reverb = (
-            self.synth_player.instruments.stereo_free_reverb(in_bus, amp_bus, mix, room, damp)
-            .add_action(AddAction.TAIL_ACTION)
-            .node_id(self.node_id)
+            self.synth_player.instruments.stereo_free_reverb(in_bus, amp_bus, mix, room, damp).add_action(AddAction.TAIL_ACTION).node_id(self.node_id)
         )
         return self.push(reverb)
 
@@ -363,7 +306,8 @@ class SynthNoteV2:
     ) -> Self:
         in_bus = self.audio_stack.pop()
         reverb = (
-            self.synth_player.instruments.stereo_g_verb(
+            self.synth_player.instruments
+            .stereo_g_verb(
                 in_bus,
                 amp_bus,
                 roomsize,
@@ -389,7 +333,7 @@ class SynthNoteV2:
             bundle = client.make_bundle(start_time, osc_messages)
             client.send_bundle(bundle)
 
-    def play(self, start_time: float, duration: float = None, output_bus: int = 0) -> None:
+    def play(self, start_time: float, duration: Optional[float] = None, output_bus: int = 0) -> None:
         final_duration = duration or self.audio_stack.duration
         if self.synth_player.should_send_to_score:
             final_output_bus = output_bus
@@ -399,13 +343,9 @@ class SynthNoteV2:
         osc_messages = supercollider_client.new_synths(audio_graph)
         self.handle_osc_messages(start_time, osc_messages)
 
-    def send_to_synth_note(self, synth_note: "SynthNoteV2", start_time: float, duration: float = None) -> None:
+    def send_to_synth_note(self, synth_note: "SynthNoteV2", start_time: float, duration: Optional[float] = None) -> None:
         final_duration = duration or self.audio_stack.duration
-
-        audio_graph = (
-            self.audio_stack.pop()
-            .static_output_bus(synth_note.input.get_output_bus())
-            .build_graph(start_time, final_duration)
-        )
+        assert synth_note.input is not None
+        audio_graph = self.audio_stack.pop().static_output_bus(synth_note.input.get_output_bus()).build_graph(start_time, final_duration)
         osc_messages = supercollider_client.new_synths(audio_graph)
         self.handle_osc_messages(start_time, osc_messages)

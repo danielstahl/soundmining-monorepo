@@ -15,7 +15,7 @@
   ],
   "settings": {
     // 1. Tell VS Code to use the uv-managed virtual environment
-    "python.defaultInterpreterPath": ".venv/bin/python",
+    "python.defaultInterpreterPath": "./.venv/bin/python",
     "jupyter.askForKernelRestart": false,    
     "python.testing.pytestEnabled": true,
 		"python.testing.unittestEnabled": false,
@@ -46,14 +46,30 @@
       "**/__pycache__": true,
       "**/.pytest_cache": true,
       "**/*.pyc": true
-    }
+    },
+
+    // --- SuperCollider Integration ---
+    // Ensure this matches the path in your config.yaml
+    "supercollider.sclang.executable": "/Applications/SuperCollider/SuperCollider.app/Contents/MacOS/sclang",    
+
+    // --- File Associations for your Scores ---
+    "files.associations": {
+      "*.scscore": "supercollider",
+      "*.txt": "supercollider",
+      "*.scd": "supercollider",
+      "*.yaml": "yaml",
+      "*.rpp": "xml" 
+    },
   },
   "extensions": {
     "recommendations": [
       "ms-python.python",
       "charliermarsh.ruff",
       "tamasfe.even-better-toml",
-      "mechatroner.rainbow-csv"
+      "mechatroner.rainbow-csv",
+      "tonytony.supercollider",
+      "ms-toolsai.jupyter",
+      "redhat.vscode-yaml"
     ]
   }
 }

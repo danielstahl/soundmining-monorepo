@@ -8,7 +8,7 @@ from soundmining_library.supercollider_receiver import SuperColliderReceiver
 
 
 class Piece:
-    def start(self, should_send_to_score: bool = False) -> None:
+    async def start(self, should_send_to_score: bool = False) -> None:
         self.environment = resolve_project_environment()
         self.supercollider_client = SupercolliderClient()
         self.supercollider_client.start()
@@ -20,14 +20,14 @@ class Piece:
         )
         instrument.setup_nodes(self.supercollider_client)
         instrument.load_synth_dir(self.supercollider_client, synth_dir=self.environment.synth_defs)
-        receiver = SuperColliderReceiver()
-        receiver.start()
-        self.receiver = receiver
+        self.receiver = SuperColliderReceiver()
+        await self.receiver.start()
 
     def stop(self) -> None:
         self.supercollider_client.stop()
         self.synth_player.stop()
-        self.receiver.stop()
+        if hasattr(self, "receiver"):
+            self.receiver.stop()
 
     def reset(self) -> None:
         self.synth_player.client.send_message(supercollider_client.clear_sched())

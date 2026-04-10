@@ -1,6 +1,7 @@
 import logging
 import time
 from pathlib import Path
+from typing import Any
 
 from pythonosc import osc_bundle, osc_bundle_builder, osc_message, osc_message_builder, udp_client
 
@@ -22,7 +23,12 @@ class SupercolliderClient:
         self.buffered_playback.stop()
 
     def reset_clock(self) -> None:
-        self.clock_time = time.time()
+        # Anchor the "Wall Clock" (NTP) to the "Monotonic Clock" (CPU)
+        self.system_start = time.time()
+        self.mono_start = time.monotonic()
+        # clock_time is now the stable reference for the whole system
+        self.clock_time = self.system_start
+        logging.info(f"Clock reset. System start: {self.system_start}")
 
     def send_message(self, message: osc_message.OscMessage) -> None:
         logging.info("Send {} message".format(message.address))
@@ -37,10 +43,16 @@ class SupercolliderClient:
         self.buffered_playback.add_bundle(bundle)
 
     def get_playback_time(self) -> float:
-        return time.time() - self.clock_time + PLAYBACK_DELAY
+        # Calculate current time based on the stable monotonic delta
+        elapsed = time.monotonic() - self.mono_start
+        return elapsed + PLAYBACK_DELAY
 
     def make_bundle(self, delta_time: float, messages: list[osc_message.OscMessage]) -> osc_bundle.OscBundle:
-        builder = osc_bundle_builder.OscBundleBuilder(self.clock_time + PLAYBACK_DELAY + delta_time)
+        # Calculate the absolute NTP timestamp for SC
+        # system_start (fixed) + delay + your generative delta
+        timestamp = self.system_start + PLAYBACK_DELAY + delta_time
+
+        builder = osc_bundle_builder.OscBundleBuilder(timestamp)
         for message in messages:
             builder.add_content(message)
         return builder.build()
@@ -58,7 +70,7 @@ def new_synth(instrument_name: str, add_action: int, node_id: int, args: list[os
     return make_message("/s_new", message_args)
 
 
-def new_synths(graph: list[list[any]]) -> list[osc_message.OscMessage]:
+def new_synths(graph: list[list[Any]]) -> list[osc_message.OscMessage]:
     osc_messages = []
     for message in graph:
         osc_messages.append(make_message("/s_new", message))

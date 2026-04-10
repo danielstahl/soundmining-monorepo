@@ -1,2 +1,4 @@
 paths:
   sounds: "concrete-music-15"
+  stage: "concrete-music-15"
+  score: "score"

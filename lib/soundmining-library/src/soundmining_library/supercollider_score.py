@@ -1,4 +1,3 @@
-
 import io
 
 from pythonosc import osc_bundle, osc_message
@@ -19,7 +18,7 @@ class SupercolliderScore:
                 case osc_bundle.OscBundle:
                     self.add_bundle(message)
                 case osc_message.OscMessage:
-                    self.add_message(bundle.timestamp, message)
+                    self.add_message(message, bundle.timestamp)
 
     def add_message(self, message: osc_message.OscMessage, time: float = 0) -> None:
         self.messages.append((time, message))
@@ -33,7 +32,7 @@ class SupercolliderScore:
             return 0
 
     def score_address(self, address: str) -> str:
-        return address.replace('/', '\\', 1)
+        return address.replace("/", "\\", 1)
 
     def new_synth_message_to_string(self, timestamp: float, message: osc_message.OscMessage) -> str:
         params = message.params
@@ -98,7 +97,7 @@ class SupercolliderScore:
         with open(file_name, "w+") as io_file:
             self.make_score(io_file)
 
-    def make_score_string(self) -> None:
+    def make_score_string(self) -> str:
         io_str = io.StringIO()
         self.make_score(io_str)
         return io_str.getvalue()

@@ -1,7 +1,7 @@
-from soundmining_library.modular.instrument import Instrument, AudioInstrument
+from typing import Any, Self, TypeVar
+
 from soundmining_library.bus_allocator import BusAllocator
-from typing import Self
-from typing import TypeVar
+from soundmining_library.modular.instrument import AudioInstrument, Instrument
 
 
 class StaticControl(AudioInstrument):
@@ -131,9 +131,7 @@ class TwoBLockControl(BlockControl):
     def __init__(self, output_bus_allocator: BusAllocator) -> None:
         super().__init__("twoBlockControl", output_bus_allocator)
 
-    def control(
-        self, levels: tuple[float, float, float], times: tuple[float, float], curves: tuple[float, float]
-    ) -> Self:
+    def control(self, levels: tuple[float, float, float], times: tuple[float, float], curves: tuple[float, float]) -> Self:
         return super()._control(levels, times, curves)
 
 
@@ -199,9 +197,7 @@ class FourBLockSineControl(BlockShapeControl):
     def __init__(self, output_bus_allocator: BusAllocator) -> None:
         super().__init__("fourBlockSineControl", output_bus_allocator)
 
-    def control(
-        self, levels: tuple[float, float, float, float, float], times: tuple[float, float, float, float]
-    ) -> Self:
+    def control(self, levels: tuple[float, float, float, float, float], times: tuple[float, float, float, float]) -> Self:
         return super()._control(levels, times)
 
 
@@ -209,9 +205,7 @@ class FourBLockExpControl(BlockShapeControl):
     def __init__(self, output_bus_allocator: BusAllocator) -> None:
         super().__init__("fourBlockExpControl", output_bus_allocator)
 
-    def control(
-        self, levels: tuple[float, float, float, float, float], times: tuple[float, float, float, float]
-    ) -> Self:
+    def control(self, levels: tuple[float, float, float, float, float], times: tuple[float, float, float, float]) -> Self:
         return super()._control(levels, times)
 
 
@@ -322,9 +316,7 @@ class LfNoiseInstrument(AudioInstrument):
     def __init__(self, output_bus_allocator: BusAllocator) -> None:
         super().__init__("lfNoiseOsc", 1, output_bus_allocator)
 
-    def lf_noise(
-        self, amp_bus: AudioInstrument, freq_bus: AudioInstrument, low_value: float, high_value: float
-    ) -> Self:
+    def lf_noise(self, amp_bus: AudioInstrument, freq_bus: AudioInstrument, low_value: float, high_value: float) -> Self:
         self.amp_bus = amp_bus
         self.freq_bus = freq_bus
         self.low_value = low_value
@@ -457,9 +449,7 @@ class BankOfResonators(AudioInstrument):
     def __init__(self, output_bus_allocator: BusAllocator) -> None:
         super().__init__("bankOfResonators", 1, output_bus_allocator)
 
-    def bank_of_resonators(
-        self, in_bus: AudioInstrument, freqs: list[float], amps: list[float], ring_times: list[float]
-    ) -> Self:
+    def bank_of_resonators(self, in_bus: AudioInstrument, freqs: list[float], amps: list[float], ring_times: list[float]) -> Self:
         self.in_bus = in_bus
         self.freqs = freqs
         self.amps = amps
@@ -503,9 +493,7 @@ class MonoGrainBuf(AudioInstrument):
 
     def graph(self, parent: list[Instrument]) -> list[Instrument]:
         return self.append_to_graph(
-            self.grain_trigger_bus.graph(
-                self.grain_duration_bus.graph(self.grain_rate_bus.graph(self.grain_pos_bus.graph(parent)))
-            )
+            self.grain_trigger_bus.graph(self.grain_duration_bus.graph(self.grain_rate_bus.graph(self.grain_pos_bus.graph(parent))))
         )
 
     def internal_build(self, start_time: float, duration: float) -> list:
@@ -689,7 +677,7 @@ class Panning(AudioInstrument):
     def graph(self, parent: list[Instrument]) -> list[Instrument]:
         return self.append_to_graph(self.in_bus.graph(self.pan_bus.graph(parent)))
 
-    def internal_build(self, start_time: float, duration: float) -> list[any]:
+    def internal_build(self, start_time: float, duration: float) -> list[Any]:
         return [
             "in",
             self.in_bus.dynamic_output_bus(start_time, duration),
@@ -888,10 +876,10 @@ class StaticAudioBusInstrument(AudioInstrument):
     def graph(self, parent: list[Instrument]) -> list[Instrument]:
         return parent
 
-    def internal_build(self, start_time: float, duration: float) -> list[any]:
+    def internal_build(self, start_time: float, duration: float) -> list[Any]:
         return []
 
-    def build(self, start_time: float, duration: float) -> list[any]:
+    def build(self, start_time: float, duration: float) -> list[Any]:
         self.instrument_is_built = True
         return []
 
@@ -928,9 +916,7 @@ class InstrumentsV2:
     def impulse_osc(self, amp_bus: AudioInstrument, freq_bus: AudioInstrument) -> ImpulseOsc:
         return ImpulseOsc(self.audio_bus_allocator).osc(amp_bus, freq_bus)
 
-    def lf_noise_osc(
-        self, amp_bus: AudioInstrument, freq_bus: AudioInstrument, low_value: float, high_value: float
-    ) -> LfNoiseInstrument:
+    def lf_noise_osc(self, amp_bus: AudioInstrument, freq_bus: AudioInstrument, low_value: float, high_value: float) -> LfNoiseInstrument:
         return LfNoiseInstrument(self.audio_bus_allocator).lf_noise(amp_bus, freq_bus, low_value, high_value)
 
     def white_noise_osc(self, amp_bus: AudioInstrument) -> WhiteNoiseOsc:
@@ -939,22 +925,16 @@ class InstrumentsV2:
     def pink_noise_osc(self, amp_bus: AudioInstrument) -> PinkNoiseOsc:
         return PinkNoiseOsc(self.audio_bus_allocator).noise(amp_bus)
 
-    def mono_play_buffer(
-        self, buf_num: int, rate: float, start: float, end: float, amp_bus: AudioInstrument
-    ) -> MonoPlayBuffer:
+    def mono_play_buffer(self, buf_num: int, rate: float, start: float, end: float, amp_bus: AudioInstrument) -> MonoPlayBuffer:
         return MonoPlayBuffer(self.audio_bus_allocator).play_buffer(buf_num, rate, start, end, amp_bus)
 
-    def stereo_play_buffer(
-        self, buf_num: int, rate: float, start: float, end: float, amp_bus: AudioInstrument
-    ) -> StereoPlayBuffer:
+    def stereo_play_buffer(self, buf_num: int, rate: float, start: float, end: float, amp_bus: AudioInstrument) -> StereoPlayBuffer:
         return StereoPlayBuffer(self.audio_bus_allocator).play_buffer(buf_num, rate, start, end, amp_bus)
 
     def bank_of_osc(self, freqs: list[float], amps: list[float], phases: list[float]) -> BankOfOsc:
         return BankOfOsc(self.audio_bus_allocator).bank_of_osc(freqs, amps, phases)
 
-    def bank_of_resonators(
-        self, in_bus: AudioInstrument, freqs: list[float], amps: list[float], ring_times: list[float]
-    ) -> BankOfResonators:
+    def bank_of_resonators(self, in_bus: AudioInstrument, freqs: list[float], amps: list[float], ring_times: list[float]) -> BankOfResonators:
         return BankOfResonators(self.audio_bus_allocator).bank_of_resonators(in_bus, freqs, amps, ring_times)
 
     def mono_grain_buf(
@@ -985,29 +965,19 @@ class InstrumentsV2:
     def stereo_low_pass_filter(self, in_bus: AudioInstrument, freq_bus: AudioInstrument) -> StereoLowPassFilter:
         return StereoLowPassFilter(self.audio_bus_allocator).filter(in_bus, freq_bus)
 
-    def mono_band_pass_filter(
-        self, in_bus: AudioInstrument, freq_bus: AudioInstrument, rq_bus: AudioInstrument
-    ) -> MonoBandPassFilter:
+    def mono_band_pass_filter(self, in_bus: AudioInstrument, freq_bus: AudioInstrument, rq_bus: AudioInstrument) -> MonoBandPassFilter:
         return MonoBandPassFilter(self.audio_bus_allocator).filter(in_bus, freq_bus, rq_bus)
 
-    def stereo_band_pass_filter(
-        self, in_bus: AudioInstrument, freq_bus: AudioInstrument, rq_bus: AudioInstrument
-    ) -> StereoBandPassFilter:
+    def stereo_band_pass_filter(self, in_bus: AudioInstrument, freq_bus: AudioInstrument, rq_bus: AudioInstrument) -> StereoBandPassFilter:
         return StereoBandPassFilter(self.audio_bus_allocator).filter(in_bus, freq_bus, rq_bus)
 
-    def mono_band_reject_filter(
-        self, in_bus: AudioInstrument, freq_bus: AudioInstrument, rq_bus: AudioInstrument
-    ) -> MonoBandRejectFilter:
+    def mono_band_reject_filter(self, in_bus: AudioInstrument, freq_bus: AudioInstrument, rq_bus: AudioInstrument) -> MonoBandRejectFilter:
         return MonoBandRejectFilter(self.audio_bus_allocator).filter(in_bus, freq_bus, rq_bus)
 
-    def stereo_band_reject_filter(
-        self, in_bus: AudioInstrument, freq_bus: AudioInstrument, rq_bus: AudioInstrument
-    ) -> StereoBandRejectFilter:
+    def stereo_band_reject_filter(self, in_bus: AudioInstrument, freq_bus: AudioInstrument, rq_bus: AudioInstrument) -> StereoBandRejectFilter:
         return StereoBandRejectFilter(self.audio_bus_allocator).filter(in_bus, freq_bus, rq_bus)
 
-    def resonant_filter(
-        self, in_bus: AudioInstrument, freq_bus: AudioInstrument, decay_bus: AudioInstrument
-    ) -> ResonantFilter:
+    def resonant_filter(self, in_bus: AudioInstrument, freq_bus: AudioInstrument, decay_bus: AudioInstrument) -> ResonantFilter:
         return ResonantFilter(self.audio_bus_allocator).filter(in_bus, freq_bus, decay_bus)
 
     def static_control(self, value: float) -> StaticControl:
@@ -1022,24 +992,16 @@ class InstrumentsV2:
     def sine_control(self, start_value: float, peak_value: float) -> SineControl:
         return SineControl(self.audio_bus_allocator).control(start_value, peak_value)
 
-    def perc_control(
-        self, start_value: float, peak_value: float, attack_time: float = 0.01, curve: float = -4
-    ) -> PercControl:
+    def perc_control(self, start_value: float, peak_value: float, attack_time: float = 0.01, curve: float = -4) -> PercControl:
         return PercControl(self.audio_bus_allocator).control(start_value, peak_value, attack_time, curve)
 
-    def two_block_control(
-        self, levels: tuple[float, float, float], times: tuple[float, float], curves: tuple[float, float]
-    ) -> TwoBLockControl:
+    def two_block_control(self, levels: tuple[float, float, float], times: tuple[float, float], curves: tuple[float, float]) -> TwoBLockControl:
         return TwoBLockControl(self.audio_bus_allocator).control(levels, times, curves)
 
-    def two_block_sine_control(
-        self, levels: tuple[float, float, float], times: tuple[float, float]
-    ) -> TwoBLockSineControl:
+    def two_block_sine_control(self, levels: tuple[float, float, float], times: tuple[float, float]) -> TwoBLockSineControl:
         return TwoBLockSineControl(self.audio_bus_allocator).control(levels, times)
 
-    def two_block_exp_control(
-        self, levels: tuple[float, float, float], times: tuple[float, float]
-    ) -> TwoBLockExpControl:
+    def two_block_exp_control(self, levels: tuple[float, float, float], times: tuple[float, float]) -> TwoBLockExpControl:
         return TwoBLockExpControl(self.audio_bus_allocator).control(levels, times)
 
     def three_block_control(
@@ -1050,14 +1012,10 @@ class InstrumentsV2:
     ) -> ThreeBLockControl:
         return ThreeBLockControl(self.audio_bus_allocator).control(levels, times, curves)
 
-    def three_block_sine_control(
-        self, levels: tuple[float, float, float, float], times: tuple[float, float, float]
-    ) -> ThreeBLockSineControl:
+    def three_block_sine_control(self, levels: tuple[float, float, float, float], times: tuple[float, float, float]) -> ThreeBLockSineControl:
         return ThreeBLockSineControl(self.audio_bus_allocator).control(levels, times)
 
-    def three_block_exp_control(
-        self, levels: tuple[float, float, float, float], times: tuple[float, float, float]
-    ) -> ThreeBLockExpControl:
+    def three_block_exp_control(self, levels: tuple[float, float, float, float], times: tuple[float, float, float]) -> ThreeBLockExpControl:
         return ThreeBLockExpControl(self.audio_bus_allocator).control(levels, times)
 
     def four_block_control(
@@ -1065,17 +1023,17 @@ class InstrumentsV2:
         levels: tuple[float, float, float, float, float],
         times: tuple[float, float, float, float],
         curves: tuple[float, float, float, float],
-    ) -> ThreeBLockControl:
+    ) -> FourBLockControl:
         return FourBLockControl(self.audio_bus_allocator).control(levels, times, curves)
 
     def four_block_sine_control(
         self, levels: tuple[float, float, float, float, float], times: tuple[float, float, float, float]
-    ) -> ThreeBLockSineControl:
+    ) -> FourBLockSineControl:
         return FourBLockSineControl(self.audio_bus_allocator).control(levels, times)
 
     def four_block_exp_control(
         self, levels: tuple[float, float, float, float, float], times: tuple[float, float, float, float]
-    ) -> ThreeBLockExpControl:
+    ) -> FourBLockExpControl:
         return FourBLockExpControl(self.audio_bus_allocator).control(levels, times)
 
     def signal_mix(self, in1_bus: AudioInstrument, in2_bus: AudioInstrument) -> SignalMix:
@@ -1087,7 +1045,7 @@ class InstrumentsV2:
     def signal_sum(self, in1_bus: AudioInstrument, in2_bus: AudioInstrument) -> SignalSum:
         return SignalSum(self.audio_bus_allocator).combine(in1_bus, in2_bus)
 
-    def signal_shape(self, in_bus: AudioInstrument, shape_bus: AudioInstrument) -> SignalSum:
+    def signal_shape(self, in_bus: AudioInstrument, shape_bus: AudioInstrument) -> SignalShape:
         return SignalShape(self.audio_bus_allocator).shape(in_bus, shape_bus)
 
     def panning(self, in_bus: AudioInstrument, pan_bus: AudioInstrument) -> Panning:
@@ -1129,9 +1087,7 @@ class InstrumentsV2:
             mod_depth,
         )
 
-    def stereo_free_reverb(
-        self, in_bus: AudioInstrument, amp_bus: AudioInstrument, mix: float, room: float, damp: float
-    ) -> StereoFreeReverb:
+    def stereo_free_reverb(self, in_bus: AudioInstrument, amp_bus: AudioInstrument, mix: float, room: float, damp: float) -> StereoFreeReverb:
         return StereoFreeReverb(self.audio_bus_allocator).reverb(in_bus, amp_bus, mix, room, damp)
 
     def stereo_g_verb(
@@ -1146,7 +1102,7 @@ class InstrumentsV2:
         drylevel: float = 1,
         earlyreflevel: float = 0.7,
         taillevel: float = 0.5,
-    ) -> StereoFreeReverb:
+    ) -> StereoGVerb:
         return StereoGVerb(self.audio_bus_allocator).reverb(
             in_bus, amp_bus, roomsize, revtime, damping, inputbw, spread, drylevel, earlyreflevel, taillevel
         )
