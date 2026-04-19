@@ -1,6 +1,5 @@
-
 from dataclasses import dataclass
-from typing import Callable, Self
+from typing import Callable, Optional, Self
 
 
 @dataclass
@@ -9,9 +8,9 @@ class SequenceNote:
     track: str
     duration: float = 1
     note: int = 0
-    freq: float = None
+    freq: Optional[float] = None
     peak: float = 0.5
-    color: str = "black"
+    color: str = "white"
 
 
 class Sequencer:
@@ -33,7 +32,7 @@ class Sequencer:
         self.step_handlers.append(handler)
         return self
 
-    def spawn_sequencer(self, i: int, sequencer: 'Sequencer') -> Self:
+    def spawn_sequencer(self, i: int, sequencer: "Sequencer") -> Self:
         step_spawn_sequencer: list[Sequencer] = self.spawn_sequences.get(i, [])
         step_spawn_sequencer.append(sequencer)
         self.spawn_sequences[i] = step_spawn_sequencer

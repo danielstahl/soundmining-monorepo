@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Self
+
 from soundmining_library.sequencer import SequenceNote
 
 
@@ -25,8 +26,8 @@ class UiPiece:
         max_freq = 0
         for track in self.tracks:
             for note in track.notes:
-                min_freq = min(min_freq, note.freq)
-                max_freq = max(max_freq, note.freq)
+                min_freq = min(min_freq, note.freq or note.note)
+                max_freq = max(max_freq, note.freq or note.note)
         return (float(min_freq), float(max_freq))
 
 
@@ -50,4 +51,3 @@ class UiPieceBuilder:
         for track_name, notes in self.tracks.items():
             tracks.append(UiTrack(track_name=track_name, notes=notes))
         return UiPiece(tracks=tracks)
-

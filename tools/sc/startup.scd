@@ -29,7 +29,7 @@
 			var device, deviceName;
 			device = ~findMidiDevice.value(srcID);
 			deviceName = ~deviceName.value(device);
-			postf("note on % veloc % chan % device %\n", num, veloc, chan, deviceName);
+			//postf("note on % veloc % chan % device %\n", num, veloc, chan, deviceName);
 			midiReciever.sendMsg("/noteOn", num, veloc, deviceName);
 		});
 
