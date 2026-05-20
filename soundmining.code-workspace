@@ -11,6 +11,10 @@
     {
       "name": "projects",
       "path": "projects"
+    },
+    {
+      "name": "docs",
+      "path": "docs"
     }
   ],
   "settings": {

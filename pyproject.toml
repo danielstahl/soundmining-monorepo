@@ -12,7 +12,8 @@ dependencies = [
     "ipywidgets",
     "ipycanvas",
     "matplotlib",
-    "soundmining-library"
+    "soundmining-library",
+    "mkdocs-material>=9.7.6",
 ]
 
 [project.scripts]

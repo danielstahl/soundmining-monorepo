@@ -39,3 +39,5 @@ config.local.yaml
 
 # SuperCollider Build Artifacts
 tools/sc/synthdefs/*.scsyndef
+
+site/

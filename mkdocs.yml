@@ -1,0 +1,36 @@
+site_name: Soundmining
+site_url: https://danielstahl.github.io/soundmining-monorepo/
+theme:
+  name: material
+  palette:
+    scheme: default         # Dark theme suits electroacoustic work
+    primary: white
+    accent: black
+  features:
+    - navigation.tabs
+    - navigation.sections
+  logo: assets/DSC_0015.jpeg
+  font:
+    text: Lato
+    code: Fira Code
+  icon:
+    repo: fontawesome/brands/github
+
+markdown_extensions:
+  - md_in_html
+
+plugins:
+  - search
+  - blog
+
+repo_url: https://github.com/danielstahl/soundmining-monorepo
+
+
+extra:
+  social:
+    - icon: fontawesome/brands/spotify
+      link: https://open.spotify.com/artist/1JCdKZdnXmyIKR2q9YtrHG
+    - icon: fontawesome/brands/soundcloud
+      link: https://soundcloud.com/danielstahl
+    - icon: fontawesome/brands/youtube
+      link: https://youtube.com/@soundmining7172
