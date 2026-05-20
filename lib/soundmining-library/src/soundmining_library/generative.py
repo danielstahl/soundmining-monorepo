@@ -1,5 +1,6 @@
 import random
-from typing import Generic, TypeVar
+from collections import Counter
+from typing import Callable, Generic, TypeVar
 
 
 def random_range(min: float, max: float) -> float:
@@ -47,6 +48,20 @@ class MarkovChain(Generic[T]):
     def __init__(self, transition_matrix: dict[T, dict[T, float]], initial_value: T) -> None:
         self.transition_matrix = self.scale_transition_matrix(transition_matrix)
         self.current_value = initial_value
+        self._counter = Counter()
+        self._init_counters()
+        self._listeners: list[Callable[[], None]] = []
+
+    def _init_counters(self):
+        for transation_matrix_key in self.transition_matrix:
+            self._counter[transation_matrix_key] = 0
+
+    def subscribe(self, callback: Callable[[], None]) -> None:
+        self._listeners.append(callback)
+
+    def _notify(self) -> None:
+        for callback in self._listeners:
+            callback()
 
     def scale_transition_matrix(self, transition_matrix: dict[T, dict[T, float]]) -> dict[T, dict[T, float]]:
         scaled_matrix = {}
@@ -58,10 +73,15 @@ class MarkovChain(Generic[T]):
             scaled_matrix[i] = scaled_transition
         return scaled_matrix
 
+    def _set_current_value(self, next_value: T):
+        self.current_value = next_value
+        self._counter[next_value] += 1
+
     def next(self) -> T:
         current_transision = self.transition_matrix[self.current_value]
         next_value = random.choices(population=list(current_transision.keys()), weights=list(current_transision.values()), k=1)[0]
-        self.current_value = next_value
+        self._set_current_value(next_value)
+        self._notify()
         return next_value
 
     def sum_transition_matrix(self) -> dict[T, float]:
@@ -70,6 +90,13 @@ class MarkovChain(Generic[T]):
             for n, weight in matrix.items():
                 summed_matrix[n] = summed_matrix.get(n, 0) + weight
         return summed_matrix
+
+    def proportions(self) -> dict[T, float]:
+        total = self._counter.total()
+        if total == 0:
+            return {state: 0 for state in self._counter}
+        else:
+            return {state: count / total for state, count in self._counter.items()}
 
 
 def pan_line(distance: float, ranges: list[tuple[float, float]] = [(-0.99, 0.99)]) -> tuple[float, float]:

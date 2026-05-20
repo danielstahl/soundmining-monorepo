@@ -1,4 +1,5 @@
 import unittest
+
 from soundmining_library import bus_allocator
 
 

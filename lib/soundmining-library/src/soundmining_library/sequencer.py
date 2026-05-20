@@ -17,7 +17,7 @@ class Sequencer:
     def __init__(self, size: int) -> None:
         self.size = size
         self._start_time_handler = lambda start: start
-        self.step_handlers = []
+        self._step_handlers = []
         self.spawn_sequences = {}
 
     def start_time_handler(self, handler: Callable[[float], float]) -> Self:
@@ -25,11 +25,11 @@ class Sequencer:
         return self
 
     def next_time_handler(self, handler: Callable[[int], float]) -> Self:
-        self.next_time_handler = handler
+        self._next_time_handler = handler
         return self
 
     def add_step_handler(self, handler: Callable[[int, float], list[SequenceNote]]) -> Self:
-        self.step_handlers.append(handler)
+        self._step_handlers.append(handler)
         return self
 
     def spawn_sequencer(self, i: int, sequencer: "Sequencer") -> Self:
@@ -42,11 +42,11 @@ class Sequencer:
         sequence_notes = []
         current_time = self._start_time_handler(start_time)
         for i in range(self.size):
-            for step_handler in self.step_handlers:
+            for step_handler in self._step_handlers:
                 step_result = step_handler(i, current_time) or []
                 sequence_notes.extend(step_result)
             for spawn_sequencer in self.spawn_sequences.get(i, []):
                 spawn_result = spawn_sequencer.generate(current_time) or []
                 sequence_notes.extend(spawn_result)
-            current_time = max(current_time + self.next_time_handler(i), 0)
+            current_time = max(current_time + self._next_time_handler(i), 0)
         return sequence_notes

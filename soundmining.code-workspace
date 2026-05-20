@@ -16,7 +16,9 @@
   "settings": {
     // 1. Tell VS Code to use the uv-managed virtual environment
     "python.defaultInterpreterPath": "./.venv/bin/python",
-    "jupyter.askForKernelRestart": false,    
+    "jupyter.askForKernelRestart": false, 
+    "notebook.formatOnSave.enabled": true,
+     
     "python.testing.pytestEnabled": true,
 		"python.testing.unittestEnabled": false,
 		"python.testing.pytestArgs": [
@@ -32,14 +34,14 @@
     "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
-      "source.fixAll.ruff": "explicit",
-      "source.organizeImports.ruff": "explicit"
+      "source.fixAll.ruff": "always",
+      "source.organizeImports.ruff": "always"
     },
 
-    // 3. TOML configuration for your pyproject files
+    // TOML configuration for your pyproject files
     "evenBetterToml.formatter.columnWidth": 88,
     
-    // 4. Clean up the sidebar (Hide junk)
+    // Clean up the sidebar (Hide junk)
     "files.exclude": {
       "**/.git": true,
       "**/.DS_Store": true,
@@ -48,9 +50,14 @@
       "**/*.pyc": true
     },
 
+    // Ruff    
+    "ruff.lint.enable": true,
+    "ruff.organizeImports": true,
+    "ruff.nativeServer": "on",
+    
     // --- SuperCollider Integration ---
     // Ensure this matches the path in your config.yaml
-    "supercollider.sclang.executable": "/Applications/SuperCollider/SuperCollider.app/Contents/MacOS/sclang",    
+    "supercollider.sclangCmd": "/Applications/SuperCollider/SuperCollider.app/Contents/MacOS/sclang",    
 
     // --- File Associations for your Scores ---
     "files.associations": {

@@ -1,10 +1,12 @@
 import time
+from enum import Enum
+from typing import Optional, Type, TypeVar
 
 import ipywidgets as widgets
 from ipycanvas import Canvas, hold_canvas
 from IPython.display import display
 
-from soundmining_library.generative import random_range
+from soundmining_library.generative import MarkovChain, random_range
 from soundmining_library.piece import Piece
 from soundmining_library.supercollider_receiver import ExtendedNoteHandler
 from soundmining_library.ui.ui_piece_model import UiPiece
@@ -20,7 +22,7 @@ class UiControls:
     def __init__(self, piece: Piece) -> None:
         self._piece = piece
         self._elements = []
-        self.float_range_sliders = {}
+        self.values = {}
 
     def header(self, text: str) -> "UiControls":
         self._elements.append(widgets.Label("text"))
@@ -37,9 +39,7 @@ class UiControls:
         self._elements.append(stop_button)
         return self
 
-    def range_floatslider(
-        self, name: str, description: str, min: float = -1.0, max: float = 1.0, step: float = 0.01, value=[-0.5, 0.5]
-    ) -> "UiControls":
+    def float_range(self, name: str, description: str, min: float = -1.0, max: float = 1.0, step: float = 0.01, value=[-0.5, 0.5]) -> "UiControls":
         slider = widgets.FloatRangeSlider(
             value=value,
             min=min,
@@ -54,7 +54,79 @@ class UiControls:
             style={"description_width": "initial", "handle_color": "#00ff88"},
         )
         self._elements.append(slider)
-        self.float_range_sliders[name] = slider
+        self.values[name] = value
+
+        def on_change(change):
+            if change["type"] == "change" and change["name"] == "value":
+                self.values[name] = change["new"]
+
+        slider.observe(on_change)
+        return self
+
+    def int_range(self, name: str, description: str, min: int = -10, max: int = 10, step: int = 1, value=[-5, 5]) -> "UiControls":
+        slider = widgets.IntRangeSlider(
+            value=value,
+            min=min,
+            max=max,
+            step=step,
+            description=description,
+            continuous_update=True,
+            orientation="horizontal",
+            readout=True,
+            readout_format="d",
+            layout=widgets.Layout(width="400px"),
+            style={"description_width": "initial", "handle_color": "#00ff88"},
+        )
+        self._elements.append(slider)
+        self.values[name] = value
+
+        def on_change(change):
+            if change["type"] == "change" and change["name"] == "value":
+                self.values[name] = change["new"]
+
+        slider.observe(on_change)
+        return self
+
+    T = TypeVar("T", bound=Enum)
+
+    def enum_chooose(self, name: str, the_enum: Type[T], default: Optional[T] = None) -> "UiControls":
+        options = [e.value for e in the_enum]
+        current_value = default.value if default is not None else list(the_enum)[0].value
+
+        chooser = widgets.ToggleButtons(options=options, value=current_value, layout=widgets.Layout(width="auto"))
+        chooser.add_class("studio-toggle")
+
+        self.values[name] = the_enum(current_value)
+
+        def on_change(change):
+            if change["type"] == "change" and change["name"] == "value":
+                self.values[name] = the_enum(change["new"])
+
+        chooser.observe(on_change)
+
+        self._elements.append(chooser)
+        return self
+
+    def markov_chain_status(self, markov_chain: MarkovChain) -> "UiControls":
+        bars = {}
+        for prop in markov_chain.proportions():
+            bar = widgets.FloatProgress(value=0, min=0, max=1, description=str(prop))
+            label = widgets.Label(value="0.0%")
+            bar.add_class("studio-progress")
+            bars[prop] = (bar, label)
+
+        def update_bars():
+            props = markov_chain.proportions()
+            for state, (bar, label) in bars.items():
+                bar_value = props.get(state, 0.0)
+                bar.value = bar_value
+                label.value = f"{bar_value:.1%}"
+
+        markov_chain.subscribe(update_bars)
+
+        container = widgets.VBox(tuple(widgets.HBox((bar, label)) for bar, label in bars.values()))
+
+        self._elements.append(container)
         return self
 
     def sound_grid(self):
@@ -267,6 +339,53 @@ class UiControls:
                     border-bottom: 1px solid #333;
                 }
                 
+                .studio-toggle .jupyter-button {
+                    background-color: #1e1e1e; /* Removed !important here */
+                    border: 1px solid #444444 !important;
+                    color: var(--text-color) !important;
+                    padding: 2px 8px !important; 
+                    font-size: 10px !important;
+                    line-height: 1 !important;
+                    min-width: 30px !important;
+                    height: 22px !important;
+                }
+                
+                .studio-toggle .jupyter-button.mod-active,
+                .studio-toggle input:checked + .jupyter-button {
+                    background-color: #1e1e1e !important; /* Only use !important here */
+                    color: var(--text-color) !important;
+                    border-color: springgreen !important;
+                }
+                 
+                .studio-toggle {
+                    gap: 2px !important;
+                }
+                
+                .studio-toggle .jupyter-button:focus,
+                .studio-toggle .jupyter-button:focus-visible {
+                    outline: none !important;
+                    box-shadow: none !important;
+                }
+
+                /* Progress bar track */
+                .studio-progress .progress {
+                    height: 8px !important;
+                    background-color: #1e1e1e !important;
+                    border: 1px solid #444444 !important;
+                }
+
+                /* Progress bar fill */
+                .studio-progress .progress-bar {
+                    background-color: springgreen !important;
+                }
+
+                /* Description label */
+                .studio-progress .widget-label {
+                    color: var(--text-color) !important;
+                    font-size: 10px !important;
+                    min-width: 60px !important;
+                }
+
             </style>
             """
         display(widgets.HTML(style_html))
