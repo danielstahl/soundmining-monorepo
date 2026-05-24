@@ -1,0 +1,8 @@
+[project]
+name = "module-music-11"
+version = "0.1.0"
+description = "Notebooks and sketches for Module Music 11"
+dependencies = [] # Add project-specific libs here if needed
+
+[tool.uv]
+managed = true

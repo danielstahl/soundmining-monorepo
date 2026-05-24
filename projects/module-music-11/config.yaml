@@ -1,0 +1,17 @@
+name: "Bright Light Night"
+descrition: |
+  This is the eleventh in a series of Module Music pieces. There are three parts. 
+  It uses fm-synthesis and generative techniques. 
+  The source-code can be found at github.com/danielstahl/module-music-11.
+tags: 
+  - electronicmusic
+  - supercollider
+  - electroacoustic
+  - ambient
+  - darkambient
+  - generativemusic
+paths:
+  artwork: "module-music-11"
+  sounds: "module-music-11"
+  stage: "module-music-11"
+  score: "score"

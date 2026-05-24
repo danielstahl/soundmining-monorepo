@@ -1,4 +1,8 @@
+![Soundmining](assets/header.jpeg){ class=hero-image }
+
 # Soundmining
+
+
 
 Soundmining makes dark, generative ambient music. Based both on pure electronic sounds and recorded natural sounds.
 

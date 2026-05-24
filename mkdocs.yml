@@ -7,21 +7,28 @@ theme:
     primary: white
     accent: black
   features:
-    - navigation.tabs
-    - navigation.sections
-  logo: assets/DSC_0015.jpeg
+    - navigation.instant
+    - navigation.indexes
+    #- navigation.tabs
+    #- navigation.sections
+  logo: assets/avatar.jpeg
   font:
     text: Lato
     code: Fira Code
   icon:
     repo: fontawesome/brands/github
 
+extra_css:
+  - stylesheets/extra.css
+  
 markdown_extensions:
   - md_in_html
 
 plugins:
   - search
   - blog
+  - tags
+  
 
 repo_url: https://github.com/danielstahl/soundmining-monorepo
 
@@ -34,3 +41,11 @@ extra:
       link: https://soundcloud.com/danielstahl
     - icon: fontawesome/brands/youtube
       link: https://youtube.com/@soundmining7172
+
+nav:
+  - About: index.md
+  - Music:
+    - music/index.md
+    - Bright Light Night: music/module-music-11.md    
+  - Posts: blog/index.md
+  - Tags: tags.md
