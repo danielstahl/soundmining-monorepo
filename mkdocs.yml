@@ -15,10 +15,12 @@ theme:
     code: Fira Code
   icon:
     repo: fontawesome/brands/github
+  custom_dir: docs/overrides
 
 extra_css:
   - stylesheets/extra.css
-  
+
+
 markdown_extensions:
   - md_in_html
 
@@ -30,6 +32,7 @@ plugins:
       categories: true      
       archive_date_format: MMMM yyyy
   - tags
+  - meta
   
 
 repo_url: https://github.com/danielstahl/soundmining-monorepo

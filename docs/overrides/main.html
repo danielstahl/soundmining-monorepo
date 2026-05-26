@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+  {{ super() }}
+  {% if page %}
+  <meta property="og:title" content="{{ page.title }}">
+  <meta property="og:url" content="{{ page.canonical_url }}">
+  {% if page.meta.description %}
+  <meta property="og:description" content="{{ page.meta.description }}">
+  {% endif %}
+  {% if page.meta.image %}
+  <meta property="og:image" content="{{ page.meta.image }}">
+  {% else %}
+  <meta property="og:image" content="{{ config.site_url }}assets/header.jpeg">
+  {% endif %}
+  {% endif %}
+{% endblock %}
