@@ -3,14 +3,12 @@ site_url: https://danielstahl.github.io/soundmining-monorepo/
 theme:
   name: material
   palette:
-    scheme: default         # Dark theme suits electroacoustic work
+    scheme: default
     primary: white
     accent: black
   features:
     - navigation.instant
     - navigation.indexes
-    #- navigation.tabs
-    #- navigation.sections
   logo: assets/avatar.jpeg
   font:
     text: Lato
@@ -26,7 +24,11 @@ markdown_extensions:
 
 plugins:
   - search
-  - blog
+  - blog:
+      blog_dir: blog
+      archive: true    
+      categories: true      
+      archive_date_format: MMMM yyyy
   - tags
   
 
@@ -49,3 +51,6 @@ nav:
     - Bright Light Night: music/module-music-11.md    
   - Posts: blog/index.md
   - Tags: tags.md
+
+not_in_nav: |
+  blog/posts/*
