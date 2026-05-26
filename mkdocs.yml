@@ -9,7 +9,7 @@ theme:
   features:
     - navigation.instant
     - navigation.indexes
-  logo: assets/avatar.jpeg
+  logo: assets/avatar-small.jpeg
   font:
     text: Lato
     code: Fira Code
