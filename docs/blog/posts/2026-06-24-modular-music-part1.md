@@ -7,7 +7,7 @@ categories:
 tags:
     - supercollider
     - modular-music
-description: How I use do modular sythesis in SuperCollider.
+description: How I use do modular synthesis in SuperCollider.
 image: https://danielstahl.github.io/soundmining-monorepo/assets/header-social-card.jpeg
 ---
 
