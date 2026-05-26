@@ -8,9 +8,11 @@ tags:
   - darkambient
   - generative-music
   - fm-synthesis
+description: Dark Ambient piece in three parts based on fm-synthesis.
+image: https://danielstahl.github.io/soundmining-monorepo/assets/module-music-11-web.jpeg
 ---
 
-![Soundmining](../assets/module-music-11.jpeg){ class=coverart-image }
+![Soundmining](../assets/module-music-11-web.jpeg){ class=coverart-image }
 
 
 # Bright Light Night
