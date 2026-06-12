@@ -52,7 +52,7 @@ class SupercolliderClient:
         # system_start (fixed) + delay + your generative delta
         timestamp = self.system_start + PLAYBACK_DELAY + delta_time
 
-        builder = osc_bundle_builder.OscBundleBuilder(timestamp)
+        builder = osc_bundle_builder.OscBundleBuilder(timestamp)  # type: ignore[arg-type]
         for message in messages:
             builder.add_content(message)
         return builder.build()

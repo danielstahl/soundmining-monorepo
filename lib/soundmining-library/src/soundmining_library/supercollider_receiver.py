@@ -95,12 +95,9 @@ class SuperColliderReceiver:
         dispatcher = Dispatcher()
         dispatcher.set_default_handler(self.default_handler)
         loop = asyncio.get_event_loop()
-        self.server = AsyncIOOSCUDPServer(("127.0.0.1", 57111), dispatcher, loop)
+        self.server = AsyncIOOSCUDPServer(("127.0.0.1", 57111), dispatcher, loop)  # type: ignore[arg-type]
         self.transport, self.protocol = await self.server.create_serve_endpoint()
         logging.info("Async Receiver is live.")
-
-        # self.server = BlockingOSCUDPServer(("127.0.0.1", 57111), dispatcher)
-        # self.executor.submit(self.run_supercollider_server)
 
     def stop(self) -> None:
         logging.info("Stop supercollider receiver")
