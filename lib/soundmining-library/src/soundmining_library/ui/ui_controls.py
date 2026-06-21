@@ -19,10 +19,11 @@ UI_FONT = "11px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica
 
 
 class UiControls:
-    def __init__(self, piece: Piece) -> None:
+    def __init__(self, piece: Piece, note_scale_factor: float = PIECE_CANVAS_NOTE_SCALE_FACTOR) -> None:
         self._piece = piece
         self._elements = []
         self.values = {}
+        self._note_scale_factor = note_scale_factor
 
     def header(self, text: str) -> "UiControls":
         self._elements.append(widgets.Label("text"))
@@ -165,7 +166,7 @@ class UiControls:
         return self
 
     def _get_canvas_width(self, piece_duration: float) -> float:
-        return 200 + (piece_duration * PIECE_CANVAS_NOTE_SCALE_FACTOR)
+        return 200 + (piece_duration * self._note_scale_factor)
 
     def _get_canvas_height(self, nr_of_tracks: int) -> float:
         return PIECE_CANVAS_TRACK_HEIGHT * nr_of_tracks + PIECE_CANVAS_HEIGHT_INDENT
@@ -178,7 +179,7 @@ class UiControls:
         self._piece_canvas.layout.width = "100%"
         self._piece_canvas.layout.height = f"{ui_height}px"
 
-        canvas_container = widgets.VBox(
+        self._canvas_container = widgets.VBox(
             [self._piece_canvas],
             layout=widgets.Layout(
                 border="1px solid dimgrey",
@@ -188,7 +189,7 @@ class UiControls:
             ),
         )
 
-        self._elements.append(canvas_container)
+        self._elements.append(self._canvas_container)
 
         return self
 
@@ -198,23 +199,26 @@ class UiControls:
         piece_canvas: Canvas = self._piece_canvas
 
         # 1. Get Metadata
-        duration = ui_piece.get_duration() or 1.0
+        duration = ui_piece.get_duration()
+        piece_start = ui_piece.get_start()
         all_pitches = [n.freq or n.note for tr in ui_piece.tracks for n in tr.notes]
         min_f = min(all_pitches) if all_pitches else 0
         max_f = max(all_pitches) if all_pitches else 100
         f_range = (max_f - min_f) or 1.0
 
         # 2. Calculate Dimensions
-        ui_width = 200 + (duration * PIECE_CANVAS_NOTE_SCALE_FACTOR)
+        ui_width = 200 + (duration * self._note_scale_factor)
         ui_height = PIECE_CANVAS_TRACK_HEIGHT * len(ui_piece.tracks)
 
         # 3. ONLY resize if needed (Setting .width clears the canvas!)
         if piece_canvas.width != int(ui_width):
             piece_canvas.width = int(ui_width)
             piece_canvas.layout.width = f"{int(ui_width)}px"
+            self._canvas_container.layout.width = f"{int(ui_width)}px"  # key fix
         if piece_canvas.height != int(ui_height):
             piece_canvas.height = int(ui_height)
             piece_canvas.layout.height = f"{int(ui_height)}px"
+            self._canvas_container.layout.height = f"{int(ui_height)}px"  # key fix
 
         # 4. Correctly wrap the canvas instance
         with hold_canvas(piece_canvas):
@@ -256,9 +260,9 @@ class UiControls:
                     rel_f = (pitch - min_f) / f_range
 
                     # X Math (Start at 200)
-                    sx = 200 + (note.start * PIECE_CANVAS_NOTE_SCALE_FACTOR)
-                    px = sx + (note.duration * note.peak * PIECE_CANVAS_NOTE_SCALE_FACTOR)
-                    ex = sx + (note.duration * PIECE_CANVAS_NOTE_SCALE_FACTOR)
+                    sx = 200 + ((note.start - piece_start) * self._note_scale_factor)
+                    px = sx + (note.duration * note.peak * self._note_scale_factor)
+                    ex = sx + (note.duration * self._note_scale_factor)
 
                     # Y Math (Offset by 10 to prevent clipping)
                     # We draw UP from the floor
@@ -399,8 +403,9 @@ class UiControls:
                 flex_flow="column",
                 align_items="stretch",
                 width="100%",
-                max_width="1000px",
-                min_width="300px",
+                # max_width="1000px",
+                # min_width="300px",
+                overflow="visible",
                 padding="10px",
                 border="1px solid #444",
                 background_color="#1e1e1e",

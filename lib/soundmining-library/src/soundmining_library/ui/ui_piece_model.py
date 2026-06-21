@@ -14,12 +14,14 @@ class UiTrack:
 class UiPiece:
     tracks: list[UiTrack]
 
+    def get_start(self) -> float:
+        all_starts = [n.start for tr in self.tracks for n in tr.notes]
+        return min(all_starts) if all_starts else 0.0
+
     def get_duration(self) -> float:
-        duration = 0
-        for track in self.tracks:
-            for note in track.notes:
-                duration = max(duration, note.start + note.duration)
-        return duration
+        piece_start = self.get_start()
+        all_durations = [(n.start + n.duration - piece_start) for tr in self.tracks for n in tr.notes]
+        return max(all_durations) if all_durations else 0.0
 
     def get_track_min_max_freq(self) -> tuple[float, float]:
         min_freq = 0
