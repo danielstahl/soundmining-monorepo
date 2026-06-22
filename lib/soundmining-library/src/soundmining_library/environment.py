@@ -54,7 +54,7 @@ def resolve_project_environment() -> ProjectEnvironment:
     full_audio_path = (base_sound_path / rel_sound_path).resolve()
     full_stage_path = (base_stage_path / rel_stage_path).resolve()
     full_score_path = (project_dir / rel_score_path).resolve()
-    render_nrt_path = (repo_root / Path("tools/render_nrt.scd")).resolve()
+    render_nrt_path = (repo_root / Path("tools/sc/render_nrt.scd")).resolve()
 
     return ProjectEnvironment(
         sound_path=full_audio_path,
