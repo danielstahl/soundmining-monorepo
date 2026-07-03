@@ -18,7 +18,7 @@
     }
   ],
   "settings": {
-    // 1. Tell VS Code to use the uv-managed virtual environment
+    // Tell VS Code to use the uv-managed virtual environment
     "python.defaultInterpreterPath": "./.venv/bin/python",
     "jupyter.askForKernelRestart": false, 
     "notebook.formatOnSave.enabled": true,
@@ -30,7 +30,7 @@
 		],
     "python.terminal.activateEnvInCurrentTerminal": true,
 
-    // 2. Use Ruff for everything (Formatting & Linting)
+    // Use Ruff for everything (Formatting & Linting)
     "python.analysis.extraPaths": [
 			"./lib/soundmining-library/src"
 		],
@@ -83,7 +83,13 @@
       "tag:yaml.org,2002:python/name:material.extensions.emoji.twemoji",
       "tag:yaml.org,2002:python/name:pymdownx.superfences.fence_code_format",
       "tag:yaml.org,2002:python/object/apply:pymdownx.slugs.slugify mapping"
-    ]
+    ],
+    "terminal.integrated.defaultProfile.osx": "fish",
+    "terminal.integrated.profiles.osx": {
+      "fish": {
+        "path": "/opt/homebrew/bin/fish"
+      }
+    },
   },
   "extensions": {
     "recommendations": [
