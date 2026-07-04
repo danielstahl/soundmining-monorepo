@@ -1,4 +1,14 @@
+name: "Birds before the storm"
+tags: 
+  - electronicmusic
+  - supercollider
+  - electroacoustic
+  - ambient
+  - darkambient
+  - generativemusic
+  - granularsynthesis
 paths:
+  artwork: "concrete-music-15"
   sounds: "concrete-music-15"
   stage: "concrete-music-15"
   score: "score"
