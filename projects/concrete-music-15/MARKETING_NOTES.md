@@ -2,11 +2,11 @@
 
 ## 2026-07-04
 
-## Released to Soundcloud
+### Released to Soundcloud
 Released as "Birds before the storm".
 Tags: `#musiqueconcrete #electronicmusic #supercollider #electroacoustic #ambient #darkambient #generativemusic #granularsynthesis`
 
-## Marketed on BlueSky
+### Marketed on BlueSky
 
 ```
 Birds before the storm
