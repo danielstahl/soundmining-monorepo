@@ -1,11 +1,13 @@
 # Music
 
 ## 2026
-###[Birds before the storm](concrete-music-15.md)
+###[Birds before the storm](pieces/concrete-music-15.md)
 *Generative Music - Granular Synthesis*
 
 ## 2025
 
-### [Bright Light Night](module-music-11.md)
+### [Bright Light Night](pieces/module-music-11.md)
 *Generative Music - FM Synthesis*
 
+### [Dots and Strokes](pieces/concrete-music-14.md)
+*Generative Music - Musique concrete*

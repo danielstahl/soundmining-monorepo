@@ -49,12 +49,11 @@ extra:
 
 nav:
   - About: index.md
-  - Music:
-    - music/index.md
-    - Birds before the storm: music/concrete-music-15.md
-    - Bright Light Night: music/module-music-11.md    
+  - Music: music/index.md    
   - Posts: blog/index.md
   - Tags: tags.md
 
 not_in_nav: |
   blog/posts/*
+  music/pieces/*
+

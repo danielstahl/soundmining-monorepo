@@ -13,7 +13,7 @@ description: Dark Ambient piece based on granular synthesis.
 image: https://danielstahl.github.io/soundmining-monorepo/assets/concrete-music-15-web.jpeg
 ---
 
-![Soundmining](../assets/concrete-music-15-web.jpeg){ class=coverart-image }
+![Soundmining](../../assets/concrete-music-15-web.jpeg){ class=coverart-image }
 
 
 # Birds before the storm
