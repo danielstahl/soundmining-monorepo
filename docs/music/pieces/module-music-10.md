@@ -9,7 +9,7 @@ tags:
   - generative-music
   - fm-synthesis
 
-description: Dark ambient music thatuses serial fm-synthesis and generative techniques.
+description: Dark ambient music that uses serial fm-synthesis and generative techniques.
 image: https://danielstahl.github.io/soundmining-monorepo/assets/module-music-10-web.jpeg
 ---
 

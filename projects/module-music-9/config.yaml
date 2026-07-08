@@ -1,4 +1,4 @@
-name: "Black Fuel"
+name: "Dark Humming"
 tags: 
   - electronicmusic
   - supercollider
@@ -8,9 +8,9 @@ tags:
   - generativemusic
   - fm-synthesis
 paths:
-  artwork: "module-music-10"
-  sounds: "module-music-10"
-  stage: "module-music-10"
+  artwork: "module-music-9"
+  sounds: "module-music-9"
+  stage: "module-music-9"
   score: "score"
 
 
