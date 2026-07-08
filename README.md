@@ -19,6 +19,7 @@ This repository is built on a modern Python stack designed for speed and portabi
 
 ```text
 .
+├── docs/                # Root for mkdocs site
 ├── lib/                 # Shared internal Python packages (Editable)
 │   └── soundmining_lib/ # The common soundmining composing library
 ├── tools/               # Automation scripts
@@ -67,6 +68,11 @@ This launches `sclang` with `tools/sc/startup.scd`. You can override the audio d
 SC_DEVICE="External Headphones" uv run sc-start
 ```
 
+## mkdocs Tools
+Run mkdocs locally
+```bash
+uv run mkdocs serve
+```
 ---
 
 ## Development: Adding New Tools
