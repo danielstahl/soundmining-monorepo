@@ -1,0 +1,15 @@
+name: "Black Fuel"
+tags: 
+  - electronicmusic
+  - supercollider
+  - electroacoustic
+  - ambient
+  - darkambient
+  - generativemusic
+paths:
+  artwork: "module-music-10"
+  sounds: "module-music-10"
+  stage: "module-music-10"
+  score: "score"
+
+

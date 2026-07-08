@@ -11,3 +11,6 @@
 
 ### [Dots and Strokes](pieces/concrete-music-14.md)
 *Generative Music - Musique concrete*
+
+### [Black Fuel](pieces/module-music-10.md)
+*Generative Music - FM Synthesis*
