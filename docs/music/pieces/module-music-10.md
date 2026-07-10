@@ -19,7 +19,7 @@ image: https://danielstahl.github.io/soundmining-monorepo/assets/module-music-10
 # Black Fuel
 
 This is the tenth in a series of Module Music pieces. It uses serial fm-synthesis and generative techniques. 
-The source-code can be found at github.com/danielstahl/module-music-10.
+The source-code can be found at [github.com/danielstahl/soundmining-monorepo/tree/main/projects/module-music-10](https://github.com/danielstahl/soundmining-monorepo/tree/main/projects/module-music-10)
 
 ## SoundCloud
 

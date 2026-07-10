@@ -22,3 +22,9 @@
 ## 2024
 ### [Wodden clouds](pieces/concrete-music-13.md)
 *Generative Music - Musique concrete*
+
+### [Shadows from points](pieces/concrete-music-12.md)
+*Generative Music - Musique concrete*
+
+### [Points in isolation](pieces/concrete-music-11.md)
+*Generative Music - Musique concrete*

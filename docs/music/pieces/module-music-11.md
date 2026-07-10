@@ -19,7 +19,7 @@ image: https://danielstahl.github.io/soundmining-monorepo/assets/module-music-11
 
 This is the eleventh in a series of Module Music pieces. Composed 2025. There are three parts. 
 It uses fm-synthesis and generative techniques. 
-The source-code can be found at github.com/danielstahl/module-music-11.
+The source-code can be found at [github.com/danielstahl/soundmining-monorepo/tree/main/projects/module-music-11](https://github.com/danielstahl/soundmining-monorepo/tree/main/projects/module-music-11)
 
 ## Part 1
 

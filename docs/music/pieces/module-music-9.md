@@ -19,7 +19,7 @@ image: https://danielstahl.github.io/soundmining-monorepo/assets/module-music-9-
 # Dark Humming
 This is the ninth in a series of Module Music pieces. It uses fm-synthesis. 
 The music is generative and uses both markov chains and random ranges. 
-The source-code can be found at github.com/danielstahl/module-music-9.
+The source-code can be found at [github.com/danielstahl/soundmining-monorepo/tree/main/projects/module-music-9](https://github.com/danielstahl/soundmining-monorepo/tree/main/projects/module-music-9)
 
 ## SoundCloud
 
