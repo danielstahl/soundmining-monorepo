@@ -28,3 +28,6 @@
 
 ### [Points in isolation](pieces/concrete-music-11.md)
 *Generative Music - Musique concrete*
+
+### [Electric Veins](pieces/module-music-8.md)
+*Generative Music - FM Synthesi*

@@ -1,0 +1,16 @@
+name: "Electric Veins"
+tags: 
+  - electronicmusic
+  - supercollider
+  - electroacoustic
+  - ambient
+  - darkambient
+  - generativemusic
+  - fm-synthesis
+paths:
+  artwork: "module-music-8"
+  sounds: "module-music-8"
+  stage: "module-music-8"
+  score: "score"
+
+
