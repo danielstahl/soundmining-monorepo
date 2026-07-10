@@ -31,3 +31,6 @@
 
 ### [Electric Veins](pieces/module-music-8.md)
 *Generative Music - FM Synthesi*
+
+### [Heart and flow](pieces/ambient-music-9.md)
+*Generative Music - Musique concrete*
