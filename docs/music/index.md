@@ -34,3 +34,7 @@
 
 ### [Heart and flow](pieces/ambient-music-9.md)
 *Generative Music - Musique concrete*
+
+## 2023
+### [Scream in the desert](pieces/ambient-music-8.md)
+*Generative Music - Musique concrete*

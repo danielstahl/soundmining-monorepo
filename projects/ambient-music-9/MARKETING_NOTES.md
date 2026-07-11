@@ -24,3 +24,11 @@ Releasd as "Heart and flow" on CD Baby
 ### Video on YouTube
 Released video on YouTube
 
+### Market video on BlueSky
+
+Heart and flow
+
+#darkambient #ambient #electronicmusic #supercollider #electroacoustic #musiqueconcrete #generativemusic
+
+https://www.youtube.com/watch?v=7u_O36yg3tI
+

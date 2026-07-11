@@ -1,0 +1,8 @@
+[project]
+name = "ambient-music-8"
+version = "0.1.0"
+description = "Notebooks and sketches for Ambient Music 8"
+dependencies = [] 
+
+[tool.uv]
+managed = true
