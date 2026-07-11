@@ -46,6 +46,8 @@ extra:
       link: https://soundcloud.com/danielstahl
     - icon: fontawesome/brands/youtube
       link: https://youtube.com/@soundmining7172
+    - icon: fontawesome/brands/bandcamp
+      link: https://soundmining.bandcamp.com/
 
 nav:
   - About: index.md
