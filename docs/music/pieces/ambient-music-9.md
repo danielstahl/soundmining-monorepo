@@ -27,3 +27,7 @@ The source-code can be found at [github.com/danielstahl/soundmining-monorepo/tre
 ## YouTube
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/7u_O36yg3tI?si=jwUYTU9Ezz4HyFOS" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## Bandcamp
+
+<iframe style="border: 0; width: 100%; height: 120px;" src="https://bandcamp.com/EmbeddedPlayer/track=3900375157/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/artwork=small/transparent=true/" seamless><a href="https://soundmining.bandcamp.com/track/heart-and-flow">Heart and flow by Soundmining</a></iframe>

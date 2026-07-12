@@ -32,3 +32,18 @@ Heart and flow
 
 https://www.youtube.com/watch?v=7u_O36yg3tI
 
+
+## 2026-07-12
+
+### Release to BandCamp
+
+- **Name:** Heart and flow 
+- **Price:**: 10 kr
+- **Coverart:** `magick ../Artwork/ambient-music-9/DSC_0006\ \(2\).jpeg -resize 1400x1400 ../Artwork/ambient-music-9/ambient-music-9-bandcamp.jpeg`
+- **Tags:** `ambient, musique concrete, dark ambient, electronic music, electro-acoustic, generative music, generative ambient, supercollider, `
+
+### Market on BlueSky
+
+Heart and flow 
+#darkambient #ambient #electronicmusic #supercollider #electroacoustic #musiqueconcrete #generativemusic
+https://soundmining.bandcamp.com/track/heart-and-flow
