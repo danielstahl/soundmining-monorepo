@@ -31,18 +31,18 @@ class SoundPlay:
         return self.absolut_time(self.end, rate)
 
     def init(self, buf_num: int, client: SupercolliderClient) -> None:
-        if not self.buf_num:
+        if self.buf_num is None:
             self.buf_num = buf_num
             client.send_message(supercollider_client.alloc_read(buf_num, self.sound_path))
         else:
             logging.warning(f"{self.sound_path} is already allocated with buf num {self.buf_num}")
 
     def stop(self, client: SupercolliderClient) -> None:
-        if self.buf_num:
+        if self.buf_num is not None:
             client.send_message(supercollider_client.free_buffer(self.buf_num))
             self.buf_num = None
         else:
-            logging.warn(f"{self.sound_path} is not allocated")
+            logging.warning(f"{self.sound_path} is not allocated")
 
 
 class ImpulseResponse:
@@ -53,17 +53,17 @@ class ImpulseResponse:
         self.right_buf_num = None
 
     def init(self, left_buf_num: int, right_buf_num: int, client: SupercolliderClient) -> None:
-        if not self.left_buf_num:
+        if self.left_buf_num is None:
             self.left_buf_num = left_buf_num
             client.send_message(supercollider_client.alloc_read(self.left_buf_num, self.left_sound_path))
-        if not self.right_buf_num:
+        if self.right_buf_num is None:
             self.right_buf_num = right_buf_num
             client.send_message(supercollider_client.alloc_read(self.right_buf_num, self.righ_sound_path))
 
     def stop(self, client: SupercolliderClient) -> None:
-        if self.left_buf_num:
+        if self.left_buf_num is not None:
             client.send_message(supercollider_client.free_buffer(self.left_buf_num))
             self.left_buf_num = None
-        if not self.right_buf_num:
+        if self.right_buf_num is not None:
             client.send_message(supercollider_client.free_buffer(self.right_buf_num))
             self.right_buf_num = None

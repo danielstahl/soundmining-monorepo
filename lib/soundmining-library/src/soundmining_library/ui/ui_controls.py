@@ -1,3 +1,4 @@
+import math
 import time
 from enum import Enum
 from typing import Optional, Type, TypeVar
@@ -8,7 +9,9 @@ from IPython.display import display
 
 from soundmining_library.generative import MarkovChain, random_range
 from soundmining_library.piece import Piece
+from soundmining_library.sound_data import SoundData
 from soundmining_library.supercollider_receiver import ExtendedNoteHandler
+from soundmining_library.ui.sound_data_ui import draw_partials
 from soundmining_library.ui.ui_piece_model import UiPiece
 
 PIECE_CANVAS_TRACK_HEIGHT = 100
@@ -16,6 +19,14 @@ PIECE_CANVAS_NOTE_SCALE_FACTOR = 5
 PIECE_CANVAS_HEIGHT_INDENT = 80
 PIECE_CANVAS_TRACK_INSET = 15
 UI_FONT = "11px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+
+# --- constants, alongside the existing PIECE_CANVAS_* ones ---
+SPECTRUM_CANVAS_BAR_WIDTH = 26
+SPECTRUM_CANVAS_BAR_GAP = 6
+SPECTRUM_CANVAS_HEIGHT = 220
+SPECTRUM_CANVAS_TOP_PADDING = 26
+SPECTRUM_CANVAS_BOTTOM_PADDING = 40
+SPECTRUM_CANVAS_LEFT_PADDING = 12
 
 
 class UiControls:
@@ -26,7 +37,7 @@ class UiControls:
         self._note_scale_factor = note_scale_factor
 
     def header(self, text: str) -> "UiControls":
-        self._elements.append(widgets.Label("text"))
+        self._elements.append(widgets.Label(text))
         return self
 
     def stop_button(self) -> "UiControls":
@@ -273,6 +284,160 @@ class UiControls:
                     piece_canvas.line_width = 2
                     piece_canvas.stroke_lines([(sx, sy), (px, py), (ex, sy)])
 
+    # PARTIAL_CANVAS_HEIGHT = 400
+    PARTIAL_CANVAS_HEIGHT = 600
+    # PARTIAL_CANVAS_TIME_SCALE_FACTOR = 400  # pixels per second
+    PARTIAL_CANVAS_TIME_SCALE_FACTOR = 600  # pixels per second
+
+    def _get_partial_canvas_width(self, duration: float) -> float:
+        return 200 + (duration * self.PARTIAL_CANVAS_TIME_SCALE_FACTOR)
+
+    def partial_canvas(self, sound_data: SoundData) -> "UiControls":
+        static_control = self._piece.instruments.static_control
+
+        ui_width = int(self._get_partial_canvas_width(duration=sound_data.duration))
+        ui_height = self.PARTIAL_CANVAS_HEIGHT
+
+        canvas = Canvas(width=ui_width, height=ui_height)
+        canvas.layout.width = f"{ui_width}px"  # was "100%" -- pin to native resolution so text renders 1:1, not browser-stretched
+        canvas.layout.height = f"{ui_height}px"
+        draw_partials(sound_data, canvas, width=ui_width, height=ui_height)
+
+        play_button = widgets.Button(description="Play", icon="play", layout=widgets.Layout(width="60px", height="20px"))
+        play_button.add_class("play-button")
+
+        def on_click(b, sound_name=sound_data.sound):
+            elapsed_since_start = time.monotonic() - self._piece.supercollider_client.mono_start
+            start_time = elapsed_since_start - ExtendedNoteHandler.MIDI_DELAY_TIME
+            (
+                self._piece.synth_player
+                .note()
+                .sound_mono(sound_name, 1.0, static_control(1.0))
+                .pan(static_control(random_range(-0.25, 0.25)))
+                .play(start_time)
+            )
+
+        play_button.on_click(on_click)
+
+        header = widgets.HBox(
+            [widgets.Label(value=str(sound_data.sound).upper()), play_button],
+            layout=widgets.Layout(justify_content="space-between", align_items="center"),
+        )
+
+        canvas_container = widgets.VBox(
+            [header, canvas],
+            layout=widgets.Layout(
+                border="1px solid dimgrey",
+                margin="10px 0",
+                width="100%",
+                overflow="auto",  # was "hidden" -- a wide/long sound can now scroll instead of silently clipping
+            ),
+        )
+        self._elements.append(canvas_container)
+        return self
+
+    def spectrum_canvas(
+        self,
+        spectrum: list[float],
+        title: str = "Spectrum",
+        use_log_scale: bool = True,
+    ) -> "UiControls":
+        if not spectrum:
+            return self
+
+        bar_width = SPECTRUM_CANVAS_BAR_WIDTH
+        gap = SPECTRUM_CANVAS_BAR_GAP
+        n = len(spectrum)
+        canvas_width = SPECTRUM_CANVAS_LEFT_PADDING * 2 + n * (bar_width + gap)
+
+        # Reserve a fixed label band sized off the min/max frequency's
+        # digit count, since that's what actually drives label length
+        # regardless of how many partials sit in between.
+        lowest_freq, highest_freq = min(spectrum), max(spectrum)
+        max_label_len = max(len(f"{lowest_freq:.0f}"), len(f"{highest_freq:.0f}"))
+        approx_char_px = 7  # conservative width per char at 11px font, rotated
+        label_band_height = max_label_len * approx_char_px + 10
+        title_height = 22
+        top_padding = title_height + label_band_height
+        canvas_height = top_padding + (SPECTRUM_CANVAS_HEIGHT - SPECTRUM_CANVAS_TOP_PADDING) + SPECTRUM_CANVAS_BOTTOM_PADDING - title_height
+
+        canvas = Canvas(width=canvas_width, height=canvas_height)
+        canvas.layout.width = f"{canvas_width}px"
+        canvas.layout.height = f"{canvas_height}px"
+
+        plot_top = top_padding
+        plot_bottom = canvas_height - SPECTRUM_CANVAS_BOTTOM_PADDING
+        plot_height = plot_bottom - plot_top
+        label_anchor_y = plot_top - 8
+
+        def scaled(value: float) -> float:
+            return math.log10(max(value, 1e-6)) if use_log_scale else value
+
+        values = [scaled(v) for v in spectrum]
+        min_v, max_v = min(values), max(values)
+        v_range = (max_v - min_v) or 1.0
+
+        with hold_canvas(canvas):
+            canvas.fill_style = "#1a1a1a"
+            canvas.fill_rect(0, 0, canvas_width, canvas_height)
+
+            canvas.fill_style = "White"
+            canvas.font = UI_FONT
+            canvas.text_align = "center"
+            canvas.text_baseline = "bottom"
+            canvas.fill_text(title, canvas_width / 2, 16)
+
+            canvas.stroke_style = "#333333"
+            canvas.line_width = 1
+            canvas.stroke_lines([(0, plot_bottom), (canvas_width, plot_bottom)])
+
+            for i, (freq, val) in enumerate(zip(spectrum, values)):
+                x = SPECTRUM_CANVAS_LEFT_PADDING + i * (bar_width + gap)
+                rel = (val - min_v) / v_range
+                bar_height = max(rel * plot_height, 2)
+                y = plot_bottom - bar_height
+
+                canvas.fill_style = "#00d1ff"
+                canvas.fill_rect(x, y, bar_width, bar_height)
+
+                canvas.save()
+                canvas.translate(x + bar_width / 2, label_anchor_y)
+                canvas.rotate(-math.pi / 2)
+                canvas.text_align = "left"
+                canvas.text_baseline = "middle"
+                canvas.fill_style = "White"
+                canvas.font = UI_FONT
+                canvas.fill_text(f"{freq:.1f}", 0, 0)
+                canvas.restore()
+
+                canvas.stroke_style = "#444444"
+                canvas.line_width = 1
+                canvas.stroke_lines([(x + bar_width / 2, plot_top - 2), (x + bar_width / 2, y)])
+
+                canvas.text_align = "center"
+                canvas.text_baseline = "top"
+                canvas.fill_style = "#888888"
+                canvas.fill_text(str(i), x + bar_width / 2, plot_bottom + 4)
+
+        canvas_container = widgets.Box(
+            [canvas],
+            layout=widgets.Layout(
+                border="1px solid dimgrey",
+                margin="10px 0",
+                width="100%",
+                overflow_x="auto",
+            ),
+        )
+
+        listing_html = (
+            '<div style=\'font-family: "Courier New", monospace; font-size: 11px; '
+            "color: whitesmoke; padding: 4px 2px; word-break: break-word;'>" + ", ".join(f"[{i}] {v:.2f}" for i, v in enumerate(spectrum)) + "</div>"
+        )
+
+        self._elements.append(canvas_container)
+        self._elements.append(widgets.HTML(listing_html))
+        return self
+
     def _output_style(self):
         style_html = """
             <style>
@@ -393,6 +558,10 @@ class UiControls:
             </style>
             """
         display(widgets.HTML(style_html))
+
+    def _widget(self, widget: widgets.Widget) -> "UiControls":
+        self._elements.append(widget)
+        return self
 
     def render(self) -> "UiControls":
         self._output_style()

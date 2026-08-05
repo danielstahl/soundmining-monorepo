@@ -1,0 +1,8 @@
+[project]
+name = "concrete-music-16"
+version = "0.1.0"
+description = "Notebooks and sketches for Piece 16"
+dependencies = ["librosa", "numpy"]
+
+[tool.uv]
+managed = true

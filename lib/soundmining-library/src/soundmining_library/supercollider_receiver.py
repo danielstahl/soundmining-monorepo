@@ -99,8 +99,9 @@ class SuperColliderReceiver:
         self.transport, self.protocol = await self.server.create_serve_endpoint()
         logging.info("Async Receiver is live.")
 
-    def stop(self) -> None:
+    async def stop(self) -> None:
         logging.info("Stop supercollider receiver")
         if self.transport:
             self.transport.close()
             self.transport = None
+            await asyncio.sleep(0)

@@ -23,11 +23,11 @@ class Piece:
         self.receiver = SuperColliderReceiver()
         await self.receiver.start()
 
-    def stop(self) -> None:
+    async def stop(self) -> None:
         self.supercollider_client.stop()
         self.synth_player.stop()
         if hasattr(self, "receiver"):
-            self.receiver.stop()
+            await self.receiver.stop()
 
     def reset(self) -> None:
         self.synth_player.client.send_message(supercollider_client.clear_sched())

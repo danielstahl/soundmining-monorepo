@@ -18,8 +18,11 @@
     }
   ],
   "settings": {
+    "workbench.colorTheme":"Dark Modern",
     // Tell VS Code to use the uv-managed virtual environment
-    "python.defaultInterpreterPath": "./.venv/bin/python",
+    //"python.defaultInterpreterPath": "./.venv/bin/python",
+    "python.defaultInterpreterPath": "${workspaceFolder:root}/.venv/bin/python",
+    
     "jupyter.askForKernelRestart": false, 
     "notebook.formatOnSave.enabled": true,
      
@@ -35,13 +38,21 @@
 			"./lib/soundmining-library/src"
 		],
     "python.analysis.typeCheckingMode": "basic",
+    "editor.fontFamily": "'JetBrains Mono', Fira Code, Inconsolata , Menlo, Monaco, 'Courier New'",
+    "editor.fontLigatures": true,
+    "editor.fontSize": 13,
+    "editor.lineHeight": 1.5,
     "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
       "source.fixAll.ruff": "always",
       "source.organizeImports.ruff": "always"
     },
-
+    "terminal.integrated.fontFamily": "'JetBrainsMono Nerd Font Mono', Fira Code, Inconsolata , Menlo, Monaco, 'Courier New'",
+    "terminal.integrated.fontSize": 13,
+    "terminal.integrated.fontLigatures.enabled": true,
+    "terminal.integrated.minimumContrastRatio": 1,
+    "terminal.integrated.drawBoldTextInBrightColors": false,
     // TOML configuration for your pyproject files
     "evenBetterToml.formatter.columnWidth": 88,
     
